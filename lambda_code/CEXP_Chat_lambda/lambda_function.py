@@ -489,7 +489,7 @@ def lambda_handler(event, context):
     print(res)
     model_id = res[0][0]
 
-    if  session_id == '' :
+    if  session_id == 'null' :
         session_id = str(uuid.uuid4())
         print("session_id: ",session_id)
     else:
