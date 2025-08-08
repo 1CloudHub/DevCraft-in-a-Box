@@ -148,6 +148,8 @@ def get_information_chunks(chat, org_question):
             if 'content' in chunk_item and 'text' in chunk_item['content'] :  # Check if keys exist
                 chunks.append(chunk_item)
 
+        min_number = min(len(chunks), FINAL_CHUNK_SIZE)
+        
         #rekrank chunks
         rerank_response = rerank_client.rerank(
                     queries=[
@@ -163,14 +165,14 @@ def get_information_chunks(chat, org_question):
                                         'modelConfiguration': {
                                 'modelArn': f"arn:aws:bedrock:{rerank_region}::foundation-model/amazon.rerank-v1:0",
                             },
-                            'numberOfResults': FINAL_CHUNK_SIZE
+                            'numberOfResults': min_number
                         },
                         'type': 'BEDROCK_RERANKING_MODEL'
                     },
                     sources=[
                         {
                             'inlineDocumentSource': {
-                                'jsonDocument': chunk,
+                                'jsonDocument': chunk['content'],
                                 'type': 'JSON'
                             },
                             'type': 'INLINE'
