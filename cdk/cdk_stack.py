@@ -622,8 +622,8 @@ class CdkStack(Stack):
                 environment={
                     **ldef.get("environment_variable", {}),
                     **db_env,
-                    **(oss_env if name == f"Index_Creation-{self.suffix}" else {})
-                    **(document_api_env if name == f"CEXP_Document_API-{self.suffix}" else {})
+                    **(oss_env if name == f"Index_Creation-{self.suffix}" else {}),
+                    **(document_api_env if name == f"CEXP_Document_API-{self.suffix}" else {}),
                     **(document_processing_env if name == f"CEXP_Document_Processing-{self.suffix}" else {})
                 },
                 layers=layers,
