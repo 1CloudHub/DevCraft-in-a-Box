@@ -1,0 +1,24 @@
+[
+  {
+    "name": "CEXP_OCR_Function",
+    "architecture": "x86_64",
+    "runtime": "python3.9",
+    "memory_size" : 256,
+    "code_zip": "./lambda_zips/CEXP_OCR_Function.zip",
+    "timeout": 360,
+    "tags": {
+      "project": "cexp"
+    },
+    "environment_variable": {
+      "ai_suggestion_table": "cexp_ocr_ai_suggestion_llm_count",
+      "cexp_ocr_ai_key_extraction_details_table": "cexp_ocr_ai_key_extraction_details",
+      "document_processing_table": "cexp_ocr_document_upload_details",
+      "document_type_table": "cexp_ocr_document_types",
+      "model_id": "us.anthropic.claude-3-5-sonnet-20241022-v2:0",
+      "prompt_metadata_table": "cexp_ocr_prompt_metadata",
+      "schema": "journeykit",
+      "temp_document_processing_table": "cexp_ocr_temp_document_upload_details"
+    },
+    "layers": ["PIL", "psycopg2", "PyMuPDF-OCR", "requests", "textractor-pkg"]
+  }
+]
