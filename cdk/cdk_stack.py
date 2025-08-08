@@ -379,7 +379,7 @@ class CdkStack(Stack):
 
         # === Lambda Creation ===
         for ldef in lambda_defs:
-            name = ldef["name"]
+            name = ldef["name"] + "-" + self.suffix
             code_path = os.path.abspath(ldef["code_zip"])
 
             fn = _lambda.Function(
@@ -494,7 +494,7 @@ class CdkStack(Stack):
         ocr.add_method(
             "POST",
             apigateway.LambdaIntegration(
-                lambda_map['CEXP_OCR_Function'],
+                lambda_map[f'CEXP_OCR_Function-{self.suffix}'],
                 proxy=False,
                 request_templates={ 
                     "application/json": ""
