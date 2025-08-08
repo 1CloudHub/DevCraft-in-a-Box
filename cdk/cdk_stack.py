@@ -585,9 +585,18 @@ class CdkStack(Stack):
             "region": self.region
         }
 
+        document_api_env = {
+            "Document_Processing" : f"CEXP_Document_Processing-{self.suffix}",
+            "Injestion_trigger" : f"CEXP_Ingestion_Trigger-{self.suffix}"
+        }
+        
+        document_processing_env = {
+            "Injestion_trigger" : f"CEXP_Ingestion_Trigger-{self.suffix}"
+        }
+        
         # === Lambda Creation ===
         for ldef in lambda_defs:
-            name = ldef["name"]
+            name = ldef["name"] + "-" + self.suffix
             code_path = os.path.abspath(ldef["code_zip"])
             
             layers = []
@@ -613,7 +622,9 @@ class CdkStack(Stack):
                 environment={
                     **ldef.get("environment_variable", {}),
                     **db_env,
-                    **(oss_env if name == "Index_Creation" else {})
+                    **(oss_env if name == f"Index_Creation-{self.suffix}" else {})
+                    **(document_api_env if name == f"CEXP_Document_API-{self.suffix}" else {})
+                    **(document_processing_env if name == f"CEXP_Document_Processing-{self.suffix}" else {})
                 },
                 layers=layers,
                 vpc=self.vpc,
@@ -651,7 +662,7 @@ class CdkStack(Stack):
         queue_url = fifo_queue.queue_url
         
         # Adding lambda Trigger
-        cexp_ingestion_lambda = lambda_map['CEXP_Ingestion_Lambda']
+        cexp_ingestion_lambda = lambda_map[f'CEXP_Ingestion_Lambda-{self.suffix}']
         fifo_queue.grant_consume_messages(cexp_ingestion_lambda)
         cexp_ingestion_lambda.add_event_source(
             SqsEventSource(
@@ -744,7 +755,7 @@ class CdkStack(Stack):
         cexp_document_api.add_method(
             "POST",
             apigateway.LambdaIntegration(
-                lambda_map['CEXP_Document_api'],
+                lambda_map[f'CEXP_Document_api-{self.suffix}'],
                 proxy=False,
                 request_templates={ 
                     "application/json": ""
@@ -881,7 +892,7 @@ class CdkStack(Stack):
         cexp_dashboard_api.add_method(
             "POST",
             apigateway.LambdaIntegration(
-                lambda_map['CEXP_Dashboard_API'],
+                lambda_map[f'CEXP_Dashboard_API-{self.suffix}'],
                 proxy=False,
                 request_templates={ 
                     "application/json": ""
@@ -966,7 +977,7 @@ class CdkStack(Stack):
         tx_dashboard.add_method(
             "POST",
             apigateway.LambdaIntegration(
-                lambda_map['CEXP_TX_Dashboard'],
+                lambda_map[f'CEXP_TX_Dashboard-{self.suffix}'],
                 proxy=False,
                 request_templates={ 
                     "application/json": ""
@@ -1021,7 +1032,7 @@ class CdkStack(Stack):
             self, "ChatLambdaIntegration",
             api_id=ws_api.ref,
             integration_type="AWS_PROXY",
-            integration_uri=f"arn:aws:apigateway:{self.region}:lambda:path/2015-03-31/functions/{lambda_map['CEXP_Chat_lambda'].function_arn}/invocations",
+            integration_uri=f"arn:aws:apigateway:{self.region}:lambda:path/2015-03-31/functions/{lambda_map[f'CEXP_Chat_lambda-{self.suffix}'].function_arn}/invocations",
             integration_method="POST",
             connection_type="INTERNET"
         )
@@ -1052,7 +1063,7 @@ class CdkStack(Stack):
         _lambda.CfnPermission(
             self, "WebSocketInvokePermission",
             action="lambda:InvokeFunction",
-            function_name=lambda_map['CEXP_Chat_lambda'].function_name,
+            function_name=lambda_map[f'CEXP_Chat_lambda-{self.suffix}'].function_name,
             principal="apigateway.amazonaws.com",
             source_arn=f"arn:aws:execute-api:{self.region}:{self.account}:{ws_api.ref}/*"
         )
@@ -1251,8 +1262,8 @@ REGION_USED={self.region}
 OPENSEARCH_ENDPOINT={opensearch_endpoint}
 PROD_QUEUE_URL={queue_url}
 DEV_QUEUE_URL={queue_url}
-DEV_DASHBOARD_FUNCTION=CEXP_Dashboard_API
-DASHBOARD_FUNCTION=CEXP_Dashboard_API
+DEV_DASHBOARD_FUNCTION={f"CEXP_Dashboard_API-{self.suffix}"}
+DASHBOARD_FUNCTION={f"CEXP_Dashboard_API-{self.suffix}"}
 DB_HOST={rds_host}
 DB_PORT=5432
 DB_DATABASE=postgres
@@ -1310,7 +1321,7 @@ EOF""",
         # Custom Resource Provider
         provider = cr.Provider(
             self, "InitProvider",
-            on_event_handler=lambda_map['Index_Creation']
+            on_event_handler=lambda_map[f'Index_Creation-{self.suffix}']
         )
 
         # Custom Resource to invoke Lambda once
@@ -1319,7 +1330,7 @@ EOF""",
             service_token=provider.service_token
         )
 
-        init_trigger.node.add_dependency(lambda_map['Index_Creation'])
+        init_trigger.node.add_dependency(lambda_map[f'Index_Creation-{self.suffix}'])
 
 
         # KNOWLEDGE BASE CREATION
@@ -1389,15 +1400,15 @@ EOF""",
         
         
         lambda_env_overrides = {
-            "CEXP_Chat_lambda" : {
+            f"CEXP_Chat_lambda-{self.suffix}" : {
                 "gateway_url" : ws_http_api_url,
                 "KB_ID" : kb.attr_knowledge_base_id
             },
-            "CEXP_Ingestion_Lambda" : {
+            f"CEXP_Ingestion_Lambda-{self.suffix}" : {
                 "QUEUE_URL" : queue_url,
                 "instance_id" : self.ec2_instance.instance_id
             },
-            "CEXP_Ingestion_Trigger" : {
+            f"CEXP_Ingestion_Trigger-{self.suffix}" : {
                 "QUEUE_URL" : queue_url,
                 "KB_ID" : kb.attr_knowledge_base_id,
                 "DS_ID" : kb_datasource.attr_data_source_id
@@ -1425,5 +1436,5 @@ EOF""",
             self, "PandasLayer", layer_version_arn=layer_arn
         )
 
-        lambda_map['CEXP_Document_api'].add_layers(pandas_layer)
-        lambda_map['CEXP_Document_Processing'].add_layers(pandas_layer)
+        lambda_map[f'CEXP_Document_api-{self.suffix}'].add_layers(pandas_layer)
+        lambda_map[f'CEXP_Document_Processing-{self.suffix}'].add_layers(pandas_layer)

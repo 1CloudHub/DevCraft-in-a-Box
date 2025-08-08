@@ -33,6 +33,9 @@ preprocess_table = os.environ["preprocess_table"]
 model_id_sonnet = os.environ["model_id_sonnet"]
 file_log_table = os.environ["file_log_table"]
 
+Document_Processing = os.environ['Document_Processing']
+Injestion_trigger = os.environ['Injestion_trigger']
+
 
 s3_client = boto3.client('s3',region_name = region_used)
 s3_resource = boto3.resource('s3',region_name = region_used) 
@@ -371,7 +374,7 @@ def new_csv_upload_process(file_name,file_type,access_type,uploaded_by,input_fil
         print("S3 RESPONSE : ",s3_upload)
         lambda_client = boto3.client('lambda',region_name = region_used)
         lambda_response = lambda_client.invoke(
-            FunctionName = "CEXP_Document_Processing",                                                                                
+            FunctionName = Document_Processing,                                                                                
             Payload = json.dumps({
                 'event_type' :'csv_file_process',
                 'file_name' : file_name,
@@ -514,7 +517,7 @@ def new_file_upload_process(file_name,file_type,access_type,uploaded_by,input_fi
         
         lambda_client = boto3.client('lambda',region_name = region_used)
         lambda_response = lambda_client.invoke(
-            FunctionName = "CEXP_Ingestion_Trigger",                                                                                
+            FunctionName = Injestion_trigger,                                                                                
             Payload = json.dumps({
                 'file_name':file_name,
                 'bucket_name':bucket_name,
@@ -635,7 +638,7 @@ def new_version_csv_upload_process(actual_file_name,file_name,file_type,access_t
         # s3_upload = s3_client.put_object(Bucket=bucket_name, Key=object_key, Body=content_decoded)
         lambda_client = boto3.client('lambda',region_name = region_used)
         lambda_response = lambda_client.invoke(
-            FunctionName = "CEXP_Document_Processing",                                                                                
+            FunctionName = Document_Processing,                                                                                
             Payload = json.dumps({
                 'event_type' :'new_csv_version_processing',
                 "actual_file_name" : actual_file_name,
@@ -809,7 +812,7 @@ def new_version_file_upload_process(actual_file_name,file_name,file_type,access_
         
         lambda_client = boto3.client('lambda',region_name = region_used)
         lambda_response = lambda_client.invoke(
-            FunctionName = "CEXP_Ingestion_Trigger",                                                                                
+            FunctionName = Injestion_trigger,                                                                                
             Payload = json.dumps({
                 'file_name':file_name,
                 'bucket_name':bucket_name,
@@ -1212,7 +1215,7 @@ def revert_csv_version(actual_file_name,new_file_name,new_version,done_by,app_id
         
         lambda_client = boto3.client('lambda',region_name = region_used)
         lambda_response = lambda_client.invoke(
-            FunctionName = "CEXP_Ingestion_Trigger",                                                                                
+            FunctionName = Injestion_trigger,                                                                                
             Payload = json.dumps({
                 'file_name':new_file_name,
                 'bucket_name':bucket_name,
@@ -1339,7 +1342,7 @@ def revert_file_version(actual_file_name,new_file_name,new_version,done_by,app_i
         
         lambda_client = boto3.client('lambda',region_name = region_used)
         lambda_response = lambda_client.invoke(
-            FunctionName = "CEXP_Ingestion_Trigger",                                                                                
+            FunctionName = Injestion_trigger,                                                                                
             Payload = json.dumps({
                 'file_name':new_file_name,
                 'bucket_name':bucket_name,
@@ -1492,7 +1495,7 @@ def delete_whole_csv_fn(actual_file_name,active_file_name,active_version,done_by
         
         lambda_client = boto3.client('lambda',region_name = region_used)
         lambda_response = lambda_client.invoke(
-            FunctionName = "CEXP_Ingestion_Trigger",                                                                                
+            FunctionName = Injestion_trigger,                                                                                
             Payload = json.dumps({
                 'file_name':active_file_name,
                 'bucket_name':bucket_name,
@@ -1613,7 +1616,7 @@ def delete_whole_file_fn(actual_file_name,active_file_name,active_version,done_b
         
         lambda_client = boto3.client('lambda',region_name = region_used)
         lambda_response = lambda_client.invoke(
-            FunctionName = "CEXP_Ingestion_Trigger",                                                                                      
+            FunctionName = Injestion_trigger,                                                                                      
             Payload = json.dumps({
                 'file_name':active_file_name,
                 'bucket_name':bucket_name,

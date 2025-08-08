@@ -27,6 +27,7 @@ file_version_table = os.environ["file_version_table"]
 file_metadata_Table = os.environ["file_metadata_Table"]
 file_log_table = os.environ["file_log_table"]
 
+Injestion_trigger = os.environ['Injestion_trigger']
 
 s3_client = boto3.client('s3',region_name = region_used)
 s3_resource = boto3.resource('s3',region_name = region_used) 
@@ -246,7 +247,7 @@ def lambda_handler(event, context):
             
             lambda_client = boto3.client('lambda',region_name = region_used)
             lambda_response = lambda_client.invoke(
-                FunctionName = "CEXP_Ingestion_Trigger",                                                                                
+                FunctionName = Injestion_trigger,                                                                                
                 Payload = json.dumps({
                     'bucket_name' :bucket_name,
                     "file_name" : file_name,
@@ -421,7 +422,7 @@ def lambda_handler(event, context):
                 return {"status":"500","Message":"Upload failed"}
         lambda_client = boto3.client('lambda',region_name = region_used)
         lambda_response = lambda_client.invoke(
-            FunctionName = "CEXP_Ingestion_Trigger",                                                                                
+            FunctionName = Injestion_trigger,                                                                                
             Payload = json.dumps({
                 'bucket_name' :bucket_name,
                 "file_name" : file_name,
