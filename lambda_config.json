@@ -1,0 +1,156 @@
+[
+  {
+    "name": "CEXP_Document_Processing",
+    "architecture": "x86_64",
+    "runtime": "python3.9",
+    "memory_size" : 128,
+    "code_zip": "./lambda_zips/CEXP_Document_Processing.zip",
+    "timeout": 360,
+    "tags": {
+      "project": "cexp"
+    },
+    "environment_variable": {
+        "file_log_table" : "ce_cexp_file_logs",
+        "file_metadata_Table" : "ce_cexp_file_metadata",
+        "file_version_table" : "ce_cexp_file_versions",
+        "schema":"journeykit"
+    },
+    "layers": ["psycopg2", "bs4", "openpyxl"]
+  }, 
+  {
+    "name": "CEXP_Document_api",
+    "architecture": "x86_64",
+    "runtime": "python3.9",
+    "memory_size" : 128,
+    "code_zip": "./lambda_zips/CEXP_Document_api.zip",
+    "timeout": 300,
+    "tags": {
+      "project": "cexp"
+    },
+    "environment_variable": {
+        "app_metadata_table":"app_meta_data",
+        "file_log_table":"ce_cexp_file_logs",
+        "file_metadata_table":"ce_cexp_file_metadata",
+        "file_version_table":"ce_cexp_file_versions",
+        "model_id_sonnet":"anthropic.claude-3-5-sonnet-20241022-v2:0",
+        "preprocess_table":"ce_cexp_preprocess_metadata",
+        "schema":"journeykit"
+    },
+    "layers": ["PYTHON_DOCX", "bs4", "openpyxl", "psycopg2"]
+  },
+  {
+    "name": "CEXP_Chat_lambda",
+    "architecture": "x86_64",
+    "runtime": "python3.9",
+    "memory_size" : 128,
+    "code_zip": "./lambda_zips/CEXP_Chat_lambda.zip",
+    "timeout": 300,
+    "tags": {
+      "project": "cexp"
+    },
+    "environment_variable": {
+        "app_meta_data":"app_meta_data",
+        "config_table":"ce_cexp_config_access",
+        "schema":"journeykit",
+        "ui_chat_session":"ce_cexp_ui_chat_session",
+        "user_table":"dev_cexp_user_management",
+        "chat_history_table":"cexp_chat_history",
+        "transcript_history_table":"cexp_transcript_history"
+    },
+    "layers": ["psycopg2", "boto3", "requests"]
+  }, 
+  {
+    "name": "CEXP_TX_Dashboard",
+    "architecture": "x86_64",
+    "runtime": "python3.9",
+    "memory_size" : 128,
+    "code_zip": "./lambda_zips/CEXP_TX_Dashboard.zip",
+    "timeout": 360,
+    "tags": {
+      "project": "cexp"
+    },
+    "environment_variable": {
+        "schema":"journeykit",
+        "USER_MANAGEMENT_TABLE":"dev_cexp_user_management"
+    },
+    "layers": ["psycopg2"]
+  },
+  {
+    "name": "CEXP_Ingestion_Lambda",
+    "architecture": "x86_64",
+    "runtime": "python3.9",
+    "memory_size" : 128,
+    "code_zip": "./lambda_zips/CEXP_Ingestion_Lambda.zip",
+    "timeout": 360,
+    "tags": {
+      "project": "cexp"
+    },
+    "environment_variable": {
+        "schema":"journeykit",
+        "FILE_METADATA_TABLE":"ce_cexp_file_metadata",
+        "FILE_VERSION_TABLE":"ce_cexp_file_versions",
+        "app_metadata_table": "app_meta_data"
+    },
+    "layers": ["psycopg2", "requests"]
+  }, 
+  {
+    "name": "CEXP_Ingestion_Trigger",
+    "architecture": "x86_64",
+    "runtime": "python3.9",
+    "memory_size" : 128,
+    "code_zip": "./lambda_zips/CEXP_Ingestion_Trigger.zip",
+    "timeout": 360,
+    "tags": {
+      "project": "cexp"
+    },
+    "environment_variable": {
+        "schema":"journeykit",
+        "app_meta_data_table":"app_meta_data"
+    },
+    "layers": ["psycopg2"]
+  },
+  {
+    "name": "CEXP_Dashboard_API",
+    "architecture": "x86_64",
+    "runtime": "python3.9",
+    "memory_size" : 128,
+    "code_zip": "./lambda_zips/CEXP_Dashboard_API.zip",
+    "timeout": 420,
+    "tags": {
+      "project": "cexp"
+    },
+    "environment_variable": {
+        "BOT_USER_TABLE":"ce_cexp_bot_user_management",
+        "CHAT_LOG_TABLE":"ce_cexp_logs",
+        "CHAT_SESSION_TABLE":"ce_cexp_ui_chat_session",
+        "CONFIG_TABLE":"ce_cexp_config_access",
+        "FILE_METADATA_TABLE":"ce_cexp_file_metadata",
+        "FILE_VERSIONS_TABLE":"ce_cexp_file_versions",
+        "PREPROCESS_TABLE":"ce_cexp_preprocess_metadata",
+        "TAGS_DOCUMENT_ASSOCIATE_TABLE":"ce_cexp_document_tags",
+        "TAGS_TABLE":"ce_cexp_tags_table",
+        "USER_TABLE":"dev_cexp_user_management",
+        "app_meta_data_table":"app_meta_data",
+        "cognito_id":"",
+        "model_id":"anthropic.claude-3-5-sonnet-20241022-v2:0",
+        "model_metadata":"model_metadata",
+        "schema":"journeykit",
+        "subscription_metadata":"subscription_metadata",
+        "CHAT_TRANSCRIPT_TABLE":"cexp_transcript_history"
+    },
+    "layers": ["psycopg2"]
+  }, 
+  {
+    "name": "Index_Creation",
+    "architecture": "x86_64",
+    "runtime": "python3.9",
+    "memory_size" : 256,
+    "code_zip": "./lambda_zips/Index_Creation.zip",
+    "timeout": 360,
+    "tags": {
+      "project": "cexp"
+    },
+    "environment_variable": {},
+    "layers": ["opensearchpy", "aws4auth"]
+  }
+]
