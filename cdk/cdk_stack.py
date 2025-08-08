@@ -83,13 +83,9 @@ class CdkStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        github_token_f = os.environ.get("GITHUB_TOKEN_F")
-        if not github_token_f:
-            raise ValueError("GITHUB_TOKEN_F environment variable not set")
-        
-        github_token_b = os.environ.get("GITHUB_TOKEN_B")
-        if not github_token_b:
-            raise ValueError("GITHUB_TOKEN_B environment variable not set")
+        github_token = os.environ.get("GITHUB_TOKEN")
+        if not github_token:
+            raise ValueError("GITHUB_TOKEN environment variable not set")
         
         api_key_value = generate_api_key()
         self.suffix = generate_random_id()
@@ -1128,7 +1124,7 @@ class CdkStack(Stack):
             "python3 -m pip install --upgrade pip",
             "mkdir -p /home/ec2-user/cexp_app",
             "cd /home/ec2-user/cexp_app",
-            f"git clone --branch cexp https://{github_token_f}@github.com/Hakash1CH/sample-app.git CEXPAPP > gitclone.log 2>&1",
+            f"git clone --branch cexp https://{github_token}@github.com/1CloudHub/DevCraft-in-a-Box-CEXP-Code.git CEXPAPP > gitclone.log 2>&1",
             
             "cd CEXPAPP", 
             f"""cat <<'EOF' > .env
@@ -1248,7 +1244,7 @@ EOF''',
   --policy file://bucket-policy.json''',
 
             
-            f"git clone https://{github_token_b}@github.com/Rahul1ch/event-test.git DB_table_git",
+            f"git clone --branch backend https://{github_token}@github.com/1CloudHub/DevCraft-in-a-Box-CEXP-Code.git DB_table_git",
             "cd DB_table_git",
             f"""cat <<'EOF' > .env
 REGION_USED={self.region}
