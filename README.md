@@ -2,7 +2,7 @@
 
 ## Overview
 
-**TextOps** is an AI-powered OCR (Optical Character Recognition) application designed to streamline document processing workflows. It leverages AWS services to extract, analyze, and organize textual data from structured and unstructured documents.
+**TextOps** is an intelligent document processing platform that harnesses AI-powered OCR to transform how organizations capture, interpret, and manage information. Built on AWS services, it can process a wide range of document formats and languages—whether structured business forms, scanned handwritten notes, or multilingual contracts—turning complex, unstructured inputs into clean, actionable data.
 
 > **Disclaimer**: This CDK setup is strictly configured for deployment in the `us-west-2` (Oregon) AWS region. Deploying to other regions may result in errors or incompatibility.
 
@@ -46,10 +46,8 @@ From the AWS Console, open the **CloudShell** environment.
 
 ### 4. Clone the CDK Repository
 
-Replace `{branch_name}` and `{pat_token}` with actual values.
-
 ```bash
-git clone --branch {branch_name} https://{pat_token}@github.com/Hakash1CH/CEXP_CDK.git
+git clone --branch cexp-ocr https://github.com/1CloudHub/DevCraft-in-a-Box.git CEXP
 ```
 
 > Clones the specified branch of the TextOps CDK infrastructure repository.
@@ -79,7 +77,7 @@ sudo npm install -g aws-cdk
 ### 7. Install Python Dependencies
 
 ```bash
-cd CEXP_CDK
+cd CEXP
 pip install --user -r requirements.txt
 ```
 
@@ -155,7 +153,7 @@ Enjoy seamless OCR and document processing powered by AI.
 
 ## About TextOps
 
-**TextOps** simplifies data extraction from documents using AI-based OCR pipelines. It supports formats such as PDFs, scanned images, and structured templates to automate data capture and reduce manual effort.
+At its core, TextOps automates data extraction through advanced AI-based OCR pipelines, supporting diverse inputs such as PDFs, scanned images, and structured templates. The platform integrates human-in-the-loop review workflows, ensuring that critical documents undergo expert validation before finalization. This combination of AI efficiency and human oversight delivers both speed and accuracy, reducing manual effort while maintaining the highest quality and compliance standards.
 
 
 ---
@@ -164,6 +162,6 @@ Enjoy seamless OCR and document processing powered by AI.
 
 © 1CloudHub. All rights reserved.
 
-This project is developed for internal demo or POC purposes and is not production-ready without proper security, scalability, and compliance review.
+The materials and components herein are provided for demonstration purposes only. No portion of this project may be implemented in a live or production environment without prior technical assessment, security clearance, and explicit approval from 1CloudHub
 
 ---
