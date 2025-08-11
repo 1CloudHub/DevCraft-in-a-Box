@@ -2,7 +2,7 @@
 
 ## Overview
 
-**Connect Xperience** is a Generative AI-based RAG (Retrieval-Augmented Generation) application developed using Amazon Bedrock. It allows users to upload documents and interact with them through a chatbot interface.
+**Connect Xperience** is a multilingual Conversational AI platform designed for both internal teams and customer-facing agents. Powered by Generative AI and built on Amazon Bedrock, it enables seamless knowledge access by allowing users to query and explore information through natural, context-rich dialogue—driving faster resolutions, improved accuracy, and enhanced customer experiences.
 
 > **Disclaimer**: This CDK setup is strictly designed and tested for the `us-west-2` region (Oregon). Please ensure that all resources are deployed only within this region to avoid compatibility issues.
 
@@ -49,7 +49,7 @@ Launch the AWS CloudShell service from the AWS Console.
 Replace `{branch_name}` and `{pat_token}` with the appropriate values.
 
 ```bash
-git clone --branch {branch_name} https://{pat_token}@github.com/Hakash1CH/CEXP_CDK.git
+git clone --branch mini-cexp https://github.com/1CloudHub/DevCraft-in-a-Box.git CEXP
 ```
 
 > Clones the specific branch of the Connect Xperience CDK repository to your CloudShell environment.
@@ -79,7 +79,7 @@ sudo npm install -g aws-cdk
 ### 7. Install Python Dependencies
 
 ```bash
-cd CEXP_CDK
+cd CEXP
 pip install --user -r requirements.txt
 ```
 
@@ -155,7 +155,7 @@ Enjoy the application experience.
 
 ## About Connect Xperience
 
-**Connect Xperience** is an AI-powered document interaction platform. Users can upload documents and chat with an intelligent assistant that provides contextual answers derived from the content.
+This platform empowers users to upload documents and instantly interact with them through an intelligent assistant that understands context, retrieves precise information, and responds in the user’s preferred language. Whether it’s for internal knowledge support or customer engagement, Connect Xperience delivers relevant, accurate answers that bridge the gap between complex data and clear communication.
 
 ---
 
@@ -163,6 +163,6 @@ Enjoy the application experience.
 
 © 1CloudHub. All rights reserved.
 
-This project and its components are intended for internal demonstration purposes only and should not be used in production without review and security assessment.
+The materials and components herein are provided for demonstration purposes only. No portion of this project may be implemented in a live or production environment without prior technical assessment, security clearance, and explicit approval from 1CloudHub
 
 ---
