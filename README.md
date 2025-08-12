@@ -57,7 +57,7 @@ git clone --branch cexp-ocr https://github.com/1CloudHub/DevCraft-in-a-Box.git C
 ### 5. Export GitHub Token
 
 ```bash
-export GITHUB_TOKEN={pat_token}
+export GITHUB_TOKEN=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
 ```
 
 > Exports the GitHub token as an environment variable for private repository access.
