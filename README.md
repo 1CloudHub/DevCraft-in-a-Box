@@ -107,7 +107,7 @@ cdk deploy
 
 ## Post Deployment Steps
 
-### 10. Set Up Textract and Bedrock (Optional)
+### 10. Set Up Textract and Bedrock
 
 If your deployment includes AI model integrations:
 
