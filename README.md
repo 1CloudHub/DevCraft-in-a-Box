@@ -46,8 +46,6 @@ Launch the AWS CloudShell service from the AWS Console.
 
 ### 4. Clone the Repository
 
-Replace `{branch_name}` and `{pat_token}` with the appropriate values.
-
 ```bash
 git clone --branch mini-cexp https://github.com/1CloudHub/DevCraft-in-a-Box.git CEXP
 ```
@@ -57,6 +55,8 @@ git clone --branch mini-cexp https://github.com/1CloudHub/DevCraft-in-a-Box.git 
 ---
 
 ### 5. Export GitHub Token
+
+Replace `{pat_token}` with the appropriate value.
 
 ```bash
 export GITHUB_TOKEN={pat_token}
