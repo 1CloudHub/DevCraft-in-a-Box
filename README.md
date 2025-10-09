@@ -147,6 +147,11 @@ Once CloudFront is active and model access (if needed) is approved:
 * Visit the application URL
 * Begin uploading documents for intelligent processing
 
+Here are few sample documents to try out the OCR!
+- [Passport](./assets/passport.png)
+- [Drivers Lisence](./assets/DriversLicense.jpeg)
+- [Invoice](./assets/Invoice.png)
+
 Enjoy seamless OCR and document processing powered by AI.
 
 ---
