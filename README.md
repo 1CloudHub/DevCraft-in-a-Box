@@ -149,6 +149,18 @@ Navigate to the **CloudFront** service.
 
 Once the CloudFront distribution is active and model access is approved, open the copied domain name in your browser to start using **Connect Xperience**.
 
+Here is the sample document to test out:
+- [Employee Welfare Policy (DOCX)](./assets/Employee_welfare_policy_SW.docx)
+
+FAQs based on the Document:
+```bash
+1. Can I take casual leave before/after weekends?
+2. What documents do I need to apply for medical leave?
+3. Is Maternity Leave applicable for contract staff?
+4. When is LOP is applicable
+5. Explain about the absence and disciplinary rules
+```
+
 Enjoy the application experience.
 
 ---
