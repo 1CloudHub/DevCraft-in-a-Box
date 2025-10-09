@@ -153,7 +153,7 @@ Here is the sample document to test out:
 - [Employee Welfare Policy (DOCX)](./assets/Employee_welfare_policy_SW.docx)
 
 FAQs based on the Document:
-```bash
+```text
 1. Can I take casual leave before/after weekends?
 2. What documents do I need to apply for medical leave?
 3. Is Maternity Leave applicable for contract staff?
