@@ -160,6 +160,224 @@ FAQs based on the Document:
 4. When is LOP is applicable
 5. Explain about the absence and disciplinary rules
 ```
+## AWS Bedrock Agent Setup Guide
+
+Welcome! This guide will walk you through setting up your HR Leave Assistant agent step-by-step. Don't worry if you're new to AWS Bedrock—just follow along at your own pace.
+
+### Getting Started
+
+1. **Access the Bedrock Console**
+   - Log in to your AWS Console
+   - Navigate to Amazon Bedrock
+   - Click on **Agents** in the left sidebar
+
+### Creating Your Agent
+
+2. **Set Up Basic Details**
+   - Click **Create Agent**
+   - Enter a meaningful name for your agent (e.g., "HR Leave Assistant")
+   - For the model, we recommend selecting **Anthropic's Claude 4.0 Sonnet** for optimal performance
+
+3. **Configure Agent Instructions**
+   - In the Instructions section, paste the agent instruction prompt provided to you
+   - This helps your agent understand how to assist employees with leave requests
+
+### Adding Knowledge Base
+
+4. **Connect Your Knowledge Base**
+   - Click **Add Knowledge Base**
+   - Select the knowledge base named **cexp-kb-xxxx** from the list
+   - Add the knowledge base instruction prompt provided to you
+   - This allows your agent to reference company leave policies
+
+### Setting Up Actions
+
+5. **Create an Action Group**
+   - Click **Add Action Group**
+   - Name it **Employee Action Group**
+   - For **Action group type**, select **"Define with API Schema"**
+
+6. **Configure Lambda Integration**
+   - For **Action Group Invocation**, choose **"Select an existing Lambda function"**
+   - Select the Lambda function named **Employee_Lambda-xxxx**
+
+7. **Add API Schema**
+   - For **Action group schema**, choose **"Define via in-line schema editor"**
+   - Paste the OpenAPI schema provided to you in the editor
+
+### Finalizing Your Setup
+
+8. **Save and Prepare**
+   - Click **Save and Exit** to return to the main agent page
+   - Review your configuration to ensure everything looks correct
+   - Click **Save** to preserve your changes
+   - Click **Prepare** to get your agent ready for use
+
+That's it! Your HR Leave Assistant is now ready to help employees with their leave requests.
+
+### Knowledge Base Instruction
+```text
+This knowledge base contains employee leave policies, guidelines, and procedures. If information is not in the knowledge base, acknowledge the limitation and suggest contacting HR directly.
+```
+
+### Agent Instructions
+```text
+You are an HR Leave Assistant that helps employees check leave balances and submit leave requests.
+
+Your capabilities:
+- Check leave balances for employees
+- Process new leave requests with employee ID, reason, and number of days
+- Answer leave policy questions using the knowledge base
+
+Always:
+- Ask for employee ID when needed
+- Before calling a action group/ tool always collect the necessary inputs
+- Confirm leave request details before submitting
+- Provide remaining balance after processing requests
+- Reference leave policies from the knowledge base when answering policy questions
+
+Keep responses professional, concise, and helpful.
+```
+
+### Action Group Schema
+```text
+{
+  "openapi": "3.0.0",
+  "info": {
+      "title": "Insurance Claims Automation API",
+      "version": "1.0.0",
+      "description": "APIs for managing insurance claims by pulling a list of open claims, identifying outstanding paperwork for each claim, and sending reminders to policy holders."
+  },
+  "paths": {
+      "/claims": {
+          "get": {
+              "summary": "Get a list of all open claims",
+              "description": "Get the list of all open insurance claims. Return all the open claimIds.",
+              "operationId": "getAllOpenClaims",
+              "responses": {
+                  "200": {
+                      "description": "Gets the list of all open insurance claims for policy holders",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "array",
+                                  "items": {
+                                      "type": "object",
+                                      "properties": {
+                                          "claimId": {
+                                              "type": "string",
+                                              "description": "Unique ID of the claim."
+                                          },
+                                          "policyHolderId": {
+                                              "type": "string",
+                                              "description": "Unique ID of the policy holder who has filed the claim."
+                                          },
+                                          "claimStatus": {
+                                              "type": "string",
+                                              "description": "The status of the claim. Claim can be in Open or Closed state"
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/claims/{claimId}/identify-missing-documents": {
+          "get": {
+              "summary": "Identify missing documents for a specific claim",
+              "description": "Get the list of pending documents that need to be uploaded by policy holder before the claim can be processed. The API takes in only one claim id and returns the list of documents that are pending to be uploaded by policy holder for that claim. This API should be called for each claim id",
+              "operationId": "identifyMissingDocuments",
+              "parameters": [{
+                  "name": "claimId",
+                  "in": "path",
+                  "description": "Unique ID of the open insurance claim",
+                  "required": true,
+                  "schema": {
+                      "type": "string"
+                  }
+              }],
+              "responses": {
+                  "200": {
+                      "description": "List of documents that are pending to be uploaded by policy holder for insurance claim",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "pendingDocuments": {
+                                          "type": "string",
+                                          "description": "The list of pending documents for the claim."
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/send-reminders": {
+          "post": {
+              "summary": "API to send reminder to the customer about pending documents for open claim",
+              "description": "Send reminder to the customer about pending documents for open claim. The API takes in only one claim id and its pending documents at a time, sends the reminder and returns the tracking details for the reminder. This API should be called for each claim id you want to send reminders for.",
+              "operationId": "sendReminders",
+              "requestBody": {
+                  "required": true,
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "type": "object",
+                              "properties": {
+                                  "claimId": {
+                                      "type": "string",
+                                      "description": "Unique ID of open claims to send reminders for."
+                                  },
+                                  "pendingDocuments": {
+                                      "type": "string",
+                                      "description": "The list of pending documents for the claim."
+                                  }
+                              },
+                              "required": [
+                                  "claimId",
+                                  "pendingDocuments"
+                              ]
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "200": {
+                      "description": "Reminders sent successfully",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "sendReminderTrackingId": {
+                                          "type": "string",
+                                          "description": "Unique Id to track the status of the send reminder Call"
+                                      },
+                                      "sendReminderStatus": {
+                                          "type": "string",
+                                          "description": "Status of send reminder notifications"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "Bad request. One or more required fields are missing or invalid."
+                  }
+              }
+          }
+      }
+  }
+}
+```
 
 Enjoy the application experience.
 
