@@ -631,6 +631,15 @@ class CdkStack(Stack):
                 security_groups=[self.sg_main],
                 vpc_subnets=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS)
             )
+            
+            if ldef['name'] == "Employee_Lambda":
+                fn.add_permission(
+                    id="AgentInvoke",
+                    principal=iam.ServicePrincipal("bedrock.amazonaws.com"),
+                    action="lambda:InvokeFunction",
+                    source_arn=f"arn:aws:bedrock:{self.region}:{self.account}:agent/*",
+                    source_account=self.account
+                )
 
             for key, val in ldef.get("tags", {}).items():
                 Tags.of(fn).add(key, val)
@@ -1255,7 +1264,7 @@ EOF''',
   --policy file://bucket-policy.json''',
 
             
-            f"git clone --branch backend https://{github_token}@github.com/1CloudHub/DevCraft-in-a-Box-CEXP-Code.git DB_table_git",
+            f"git clone --branch agent_backend https://{github_token}@github.com/1CloudHub/DevCraft-in-a-Box-CEXP-Code.git DB_table_git",
             "cd DB_table_git",
             f"""cat <<'EOF' > .env
 REGION_USED={self.region}

@@ -152,5 +152,22 @@
     },
     "environment_variable": {},
     "layers": ["opensearchpy", "aws4auth"]
+  },
+  {
+    "name": "Employee_Lambda",
+    "architecture": "x86_64",
+    "runtime": "python3.9",
+    "memory_size": 128,
+    "code_zip": "./lambda_zips/Employee_Lambda.zip",
+    "timeout": 120,
+    "tags": {
+      "project" : "cexp"
+    },
+    "environment_variable": {
+      "schema":"journeykit",
+      "employee_details": "employee_details",
+      "employee_leave_records": "employee_leave_records"
+    },
+    "layers": ["psycopg2"]
   }
 ]
