@@ -181,7 +181,7 @@ Welcome! This guide will walk you through setting up your HR Leave Assistant age
 3. **Configure Agent Instructions**
    - In the Instructions section, paste the agent instruction prompt provided to you
    - This helps your agent understand how to assist employees with leave requests
-   - **Save** the Configurations here.
+   - Click **Save** to preserve your changes
 
 ### Adding Knowledge Base
 
@@ -190,7 +190,7 @@ Welcome! This guide will walk you through setting up your HR Leave Assistant age
    - Select the knowledge base named **cexp-kb-xxxx** from the list
    - Add the knowledge base instruction prompt provided to you
    - This allows your agent to reference company leave policies
-   - **save** the configuration here.
+   - Click **Save** to preserve your changes
 
 ### Setting Up Actions
 
@@ -218,8 +218,6 @@ Welcome! This guide will walk you through setting up your HR Leave Assistant age
 That's it! Your HR Leave Assistant is now ready to help employees with their leave requests.
 
 Here is the Employee Details:
-
-![Employee Details](./assets/Employee_Details.png)
 
 | Employee ID | Employee Name | No. of Leave |
 | ----------- | ------------- | ------------ |
