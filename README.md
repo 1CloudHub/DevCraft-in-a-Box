@@ -176,7 +176,7 @@ Welcome! This guide will walk you through setting up your HR Leave Assistant age
 2. **Set Up Basic Details**
    - Click **Create Agent**
    - Enter a meaningful name for your agent (e.g., "HR Leave Assistant")
-   - For the model, we recommend selecting **Anthropic's Claude 4.0 Sonnet** for optimal performance
+   - For the model, we recommend selecting **Anthropic's Claude 4.0 Sonnet** or **Amazon's Nova Pro** (if prior isn't available) for optimal performance
 
 3. **Configure Agent Instructions**
    - In the Instructions section, paste the agent instruction prompt provided to you
