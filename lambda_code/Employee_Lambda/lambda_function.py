@@ -85,8 +85,62 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         message_version = event.get('messageVersion', 1)
 
         if httpMethod.upper() == 'GET':
-            query = f"select json_agg(row_to_json(row_values)) from (SELECT EmployeeName, EmployeeID, NoOfLeave from {schema}.{employee_details}) as row_values"
+            if len(parameters) > 0 and parameters[0].get('name') == 'empId':
+                empID = parameters[0]['value']
+                empID = empID.upper()
+            else:
+                response_body = {
+                    'application/json': {
+                        'body': json.dumps({
+                            "message": f"Can't Process request, EmpID isn't passed",
+                            "remaining_balance": 0
+                        })
+                    }
+                }
+
+                action_response = {
+                    'actionGroup': action_group,
+                    'apiPath': apiPath,
+                    'httpMethod': httpMethod,
+                    'httpStatusCode': 200,
+                    'responseBody': response_body
+                }
+
+                response = {
+                    'response': action_response,
+                    'messageVersion': message_version
+                }
+
+                return response
+
+            query = f"select json_agg(row_to_json(row_values)) from (SELECT EmployeeName, EmployeeID, NoOfLeave from {schema}.{employee_details} WHERE EmployeeID = '{empID}') as row_values"
             res = select_db(query)
+
+            if not res:
+                response_body = {
+                    'application/json': {
+                        'body': json.dumps({
+                            "message": f"Can't Process request, EmpID doesn't exist, Try with a proper Employee ID",
+                            "remaining_balance": 0
+                        })
+                    }
+                }
+
+                action_response = {
+                    'actionGroup': action_group,
+                    'apiPath': apiPath,
+                    'httpMethod': httpMethod,
+                    'httpStatusCode': 200,
+                    'responseBody': response_body
+                }
+
+                response = {
+                    'response': action_response,
+                    'messageVersion': message_version
+                }
+
+                return response
+
             # Return list of employee leaves
             response_body = {
                 'application/json': {
@@ -101,10 +155,11 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 _parameters = {}
                 for i in body:
                     _parameters[i['name']] = i['value']
-                
+
                 print("Inside Post : ", _parameters)
                 # Extract mock input parameters
-                empId = _parameters.get('empId', 'EMP-001')
+                empId = _parameters.get('empId', '')
+                empId = empId.upper()
                 reason = _parameters.get('reason', 'Personal')
                 noOfDays = int(_parameters.get('noOfDays', 1))
 

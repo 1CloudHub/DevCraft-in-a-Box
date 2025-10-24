@@ -181,6 +181,7 @@ Welcome! This guide will walk you through setting up your HR Leave Assistant age
 3. **Configure Agent Instructions**
    - In the Instructions section, paste the agent instruction prompt provided to you
    - This helps your agent understand how to assist employees with leave requests
+   - **Save** the Configurations here.
 
 ### Adding Knowledge Base
 
@@ -189,12 +190,13 @@ Welcome! This guide will walk you through setting up your HR Leave Assistant age
    - Select the knowledge base named **cexp-kb-xxxx** from the list
    - Add the knowledge base instruction prompt provided to you
    - This allows your agent to reference company leave policies
+   - **save** the configuration here.
 
 ### Setting Up Actions
 
 5. **Create an Action Group**
    - Click **Add Action Group**
-   - Name it **Employee Action Group**
+   - Name it **Employee_Action_Group**
    - For **Action group type**, select **"Define with API Schema"**
 
 6. **Configure Lambda Integration**
@@ -215,6 +217,22 @@ Welcome! This guide will walk you through setting up your HR Leave Assistant age
 
 That's it! Your HR Leave Assistant is now ready to help employees with their leave requests.
 
+Here is the Employee Details:
+![Employee Details](./assets/Employee_Details.png)
+
+| Employee ID | Employee Name | No. of Leave |
+| ----------- | ------------- | ------------ |
+| EMP01       | Alice         | 7            |
+| EMP02       | John          | 3            |
+| EMP03       | Peter         | 9            |
+| EMP04       | David         | 5            |
+| EMP05       | Joe           | 4            |
+| EMP06       | Tom           | 8            |
+| EMP07       | Garry         | 4            |
+| EMP08       | Lim           | 2            |
+| EMP09       | Harry         | 5            |
+| EMP10       | Robert        | 12           |
+
 ### Knowledge Base Instruction
 ```text
 This knowledge base contains employee leave policies, guidelines, and procedures. If information is not in the knowledge base, acknowledge the limitation and suggest contacting HR directly.
@@ -225,7 +243,7 @@ This knowledge base contains employee leave policies, guidelines, and procedures
 You are an HR Leave Assistant that helps employees check leave balances and submit leave requests.
 
 Your capabilities:
-- Check leave balances for employees
+- Check leave balances for employee with their employee ID
 - Process new leave requests with employee ID, reason, and number of days
 - Answer leave policy questions using the knowledge base
 
@@ -236,146 +254,122 @@ Always:
 - Provide remaining balance after processing requests
 - Reference leave policies from the knowledge base when answering policy questions
 
+DO NOT Reveal any internal tools details. Always collect the Inputs in a user friendly manner
 Keep responses professional, concise, and helpful.
 ```
 
 ### Action Group Schema
 ```text
 {
-  "openapi": "3.0.0",
-  "info": {
-      "title": "Insurance Claims Automation API",
-      "version": "1.0.0",
-      "description": "APIs for managing insurance claims by pulling a list of open claims, identifying outstanding paperwork for each claim, and sending reminders to policy holders."
-  },
-  "paths": {
-      "/claims": {
-          "get": {
-              "summary": "Get a list of all open claims",
-              "description": "Get the list of all open insurance claims. Return all the open claimIds.",
-              "operationId": "getAllOpenClaims",
-              "responses": {
-                  "200": {
-                      "description": "Gets the list of all open insurance claims for policy holders",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "type": "array",
-                                  "items": {
-                                      "type": "object",
-                                      "properties": {
-                                          "claimId": {
-                                              "type": "string",
-                                              "description": "Unique ID of the claim."
-                                          },
-                                          "policyHolderId": {
-                                              "type": "string",
-                                              "description": "Unique ID of the policy holder who has filed the claim."
-                                          },
-                                          "claimStatus": {
-                                              "type": "string",
-                                              "description": "The status of the claim. Claim can be in Open or Closed state"
-                                          }
-                                      }
-                                  }
-                              }
-                          }
-                      }
-                  }
-              }
-          }
-      },
-      "/claims/{claimId}/identify-missing-documents": {
-          "get": {
-              "summary": "Identify missing documents for a specific claim",
-              "description": "Get the list of pending documents that need to be uploaded by policy holder before the claim can be processed. The API takes in only one claim id and returns the list of documents that are pending to be uploaded by policy holder for that claim. This API should be called for each claim id",
-              "operationId": "identifyMissingDocuments",
-              "parameters": [{
-                  "name": "claimId",
-                  "in": "path",
-                  "description": "Unique ID of the open insurance claim",
-                  "required": true,
-                  "schema": {
-                      "type": "string"
-                  }
-              }],
-              "responses": {
-                  "200": {
-                      "description": "List of documents that are pending to be uploaded by policy holder for insurance claim",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "type": "object",
-                                  "properties": {
-                                      "pendingDocuments": {
-                                          "type": "string",
-                                          "description": "The list of pending documents for the claim."
-                                      }
-                                  }
-                              }
-                          }
-                      }
-                  }
-              }
-          }
-      },
-      "/send-reminders": {
-          "post": {
-              "summary": "API to send reminder to the customer about pending documents for open claim",
-              "description": "Send reminder to the customer about pending documents for open claim. The API takes in only one claim id and its pending documents at a time, sends the reminder and returns the tracking details for the reminder. This API should be called for each claim id you want to send reminders for.",
-              "operationId": "sendReminders",
-              "requestBody": {
-                  "required": true,
-                  "content": {
-                      "application/json": {
-                          "schema": {
-                              "type": "object",
-                              "properties": {
-                                  "claimId": {
-                                      "type": "string",
-                                      "description": "Unique ID of open claims to send reminders for."
-                                  },
-                                  "pendingDocuments": {
-                                      "type": "string",
-                                      "description": "The list of pending documents for the claim."
-                                  }
-                              },
-                              "required": [
-                                  "claimId",
-                                  "pendingDocuments"
-                              ]
-                          }
-                      }
-                  }
-              },
-              "responses": {
-                  "200": {
-                      "description": "Reminders sent successfully",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "type": "object",
-                                  "properties": {
-                                      "sendReminderTrackingId": {
-                                          "type": "string",
-                                          "description": "Unique Id to track the status of the send reminder Call"
-                                      },
-                                      "sendReminderStatus": {
-                                          "type": "string",
-                                          "description": "Status of send reminder notifications"
-                                      }
-                                  }
-                              }
-                          }
-                      }
-                  },
-                  "400": {
-                      "description": "Bad request. One or more required fields are missing or invalid."
-                  }
-              }
-          }
-      }
-  }
+    "openapi": "3.0.0",
+    "info": {
+        "title": "HR Leave Portal API",
+        "version": "1.0.0",
+        "description": "APIs for fetching Employee Leave details"
+    },
+    "paths": {
+        "/leave": {
+            "get": {
+                "summary": "Get leave details of a single employee",
+                "description": "Fetches the leave information for a specific employee using their Employee ID.",
+                "operationId": "getEmployeeLeave",
+                "parameters": [
+                    {
+                        "name": "empId",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Unique ID of the Employee whose leave details are to be fetched."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved leave details for the specified employee",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "employeeName": {
+                                            "type": "string",
+                                            "description": "Full name of the employee"
+                                        },
+                                        "employeeID": {
+                                            "type": "string",
+                                            "description": "Unique ID of the Employee"
+                                        },
+                                        "NoOfLeave": {
+                                            "type": "integer",
+                                            "description": "Number of available leaves for the employee"
+                                        }
+                                    },
+                                    "required": ["employeeName", "employeeID", "NoOfLeave"]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Employee not found"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Process/apply a new leave request of an employee",
+                "description": "Creates/applies a new leave request for an employee",
+                "operationId": "CreateLeave",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "empId": {
+                                        "type": "string",
+                                        "description": "Unique ID of the Employee."
+                                    },
+                                    "reason": {
+                                        "type": "string",
+                                        "description": "Reason for leave"
+                                    },
+                                    "noOfDays": {
+                                        "type": "integer",
+                                        "description": "Number of days requested for leave"
+                                    }
+                                },
+                                "required": ["empId", "reason", "noOfDays"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully created leave request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Success or error message"
+                                        },
+                                        "remaining_balance": {
+                                            "type": "integer",
+                                            "description": "Remaining leave balance of the employee"
+                                        }
+                                    },
+                                    "required": ["message", "remaining_balance"]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 ```
 
