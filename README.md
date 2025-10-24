@@ -218,6 +218,7 @@ Welcome! This guide will walk you through setting up your HR Leave Assistant age
 That's it! Your HR Leave Assistant is now ready to help employees with their leave requests.
 
 Here is the Employee Details:
+
 ![Employee Details](./assets/Employee_Details.png)
 
 | Employee ID | Employee Name | No. of Leave |
