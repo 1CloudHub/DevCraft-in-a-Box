@@ -98,6 +98,9 @@ class CdkStack(Stack):
         self.identifiers = {
             "rds_instance": f"ce-cexp-db-{self.suffix}"
         }
+
+        # === Region Used ===
+        self.region = 'ap-southeast-1'
  
         # === VPC ===
         self.vpc = ec2.Vpc(
@@ -1424,9 +1427,12 @@ EOF""",
                     
         layer_arns = CfnMapping(
             self, "PandasLayerMapping",
+            # mapping={
+            #     "us-east-1": {"arn": "arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python39:30"},
+            #     "us-west-2": {"arn": "arn:aws:lambda:us-west-2:336392948345:layer:AWSSDKPandas-Python39:30"},
+            # }
             mapping={
-                "us-east-1": {"arn": "arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python39:30"},
-                "us-west-2": {"arn": "arn:aws:lambda:us-west-2:336392948345:layer:AWSSDKPandas-Python39:30"},
+                "ap-southeast-1": {"arn": "arn:aws:lambda:ap-southeast-1:336392948345:layer:AWSSDKPandas-Python39:32"}
             }
         )
 
