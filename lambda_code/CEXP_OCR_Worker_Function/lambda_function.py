@@ -21,9 +21,9 @@ region_name = os.environ['region_name']
 
 schema = os.environ['schema']
 model_id = os.environ['model_id']
-ocr_document_types_table = os.environ['ocr_document_types_table']
+ocr_document_types_table = os.environ['cexp_ocr_document_types']
 job_table = os.environ['job_table']
-ocr_prompt_metadata_table  = os.environ['ocr_prompt_metadata_table']
+ocr_prompt_metadata_table  = os.environ['prompt_metadata_table']
 ocr_document_upload_table = os.environ['ocr_document_upload_table']
 
 

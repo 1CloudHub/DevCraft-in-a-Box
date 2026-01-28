@@ -219,7 +219,15 @@ class CdkStack(Stack):
             parameter_group=self.rds_parameter_grp
         )
         
-        self.rds_instance.add_role(self.rds_role)
+        # self.rds_instance.add_role(self.rds_role)
+        cfn_db = self.rds_instance.node.default_child
+ 
+        cfn_db.associated_roles = [
+             rds.CfnDBInstance.DBInstanceRoleProperty(
+                 role_arn=self.rds_role.role_arn,
+                 feature_name="Lambda"
+             )
+        ]
 
         for key, value in self.global_tags.items():
             Tags.of(self.rds_instance).add(key, value)
@@ -796,7 +804,7 @@ DB_PORT=5432
 DB_DATABASE=postgres
 DB_USER=postgres
 DB_PASSWORD=Cexp$2025
-LAMBDA_ARN={lambda_map[f'CEXP_OCR_Function-{self.suffix}'].funtion_arn}
+LAMBDA_ARN={lambda_map[f'CEXP_OCR_Function-{self.suffix}'].function_arn}
 EOF""",
             "python3 -m pip install psycopg2-binary dotenv > pip_install.log 2>&1",
             "python3 OCR_Table_Creation.py > table_creation.log 2>&1"
