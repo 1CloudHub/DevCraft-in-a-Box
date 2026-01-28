@@ -33,6 +33,7 @@ arch_map = {
 runtime_map = {
     "python3.9": _lambda.Runtime.PYTHON_3_9,
     "python3.10": _lambda.Runtime.PYTHON_3_10,
+    "pythob3.12": _lambda.Runtime.PYTHON_3_12
     # Add more if needed
 }
 
@@ -142,6 +143,28 @@ class CdkStack(Stack):
             
         CfnOutput(self, "SecurityGroupId", value=self.sg_main.security_group_id)
         
+        # === RDS Role === 
+        self.rds_role = iam.Role(
+            self, "CexpOCR-RDSRole",
+            assumed_by=iam.ServicePrincipal("rds.amazonaws.com"),
+            managed_policies=[
+                iam.ManagedPolicy.from_aws_managed_policy_name("AWSLambda_FullAccess"),
+            ],
+            role_name=f"CexpOCR-RDSRole-{self.suffix}"
+        )
+        
+        # === RDS Parameter Group === 
+        self.rds_parameter_grp = rds.ParameterGroup(
+            self,
+            "Postgres17ParameterGroup",
+            engine=rds.DatabaseInstanceEngine.postgres(
+                version=rds.PostgresEngineVersion.VER_17
+            ),
+            parameters={
+                "rds.custom_dns_resolution": "1"
+            }
+        )
+        
         
         # === RDS Subnet Group ===
         self.rds_subnet_group = rds.SubnetGroup(
@@ -192,8 +215,11 @@ class CdkStack(Stack):
             deletion_protection=False,
             auto_minor_version_upgrade=False,
             enable_performance_insights=False,
-            monitoring_interval=Duration.seconds(0)
+            monitoring_interval=Duration.seconds(0),
+            parameter_group=self.rds_parameter_grp
         )
+        
+        self.rds_instance.add_role(self.rds_role)
 
         for key, value in self.global_tags.items():
             Tags.of(self.rds_instance).add(key, value)
@@ -374,7 +400,8 @@ class CdkStack(Stack):
             "db_port": "5432",
             "db_user": "postgres",
             "bucket_name": final_bucket_name,
-            "region_name": self.region
+            "region_name": self.region,
+            "worker_name": f"CEXP_OCR_Worker_Function-{self.suffix}"
         }
 
         # === Lambda Creation ===
@@ -649,7 +676,7 @@ class CdkStack(Stack):
             "python3 -m pip install --upgrade pip",
             "mkdir -p /home/ec2-user/cexp_app",
             "cd /home/ec2-user/cexp_app",
-            f"git clone --branch ocr https://{github_token}@github.com/1CloudHub/DevCraft-in-a-Box-CEXP-Code.git cexpOCR > gitclone.log 2>&1",
+            f"git clone --branch ocr_auto_classification https://{github_token}@github.com/1CloudHub/DevCraft-in-a-Box-CEXP-Code.git cexpOCR > gitclone.log 2>&1",
             
             "cd cexpOCR", 
             f"""cat <<EOF > .env
@@ -761,7 +788,7 @@ EOF''',
   --policy file://bucket-policy.json''',
 
             
-            f"git clone --branch backend https://{github_token}@github.com/1CloudHub/DevCraft-in-a-Box-CEXP-Code.git DB_table_git",
+            f"git clone --branch backend_auto_classification https://{github_token}@github.com/1CloudHub/DevCraft-in-a-Box-CEXP-Code.git DB_table_git",
             "cd DB_table_git",
             f"""cat <<'EOF' > .env
 DB_HOST={rds_host}
@@ -769,6 +796,7 @@ DB_PORT=5432
 DB_DATABASE=postgres
 DB_USER=postgres
 DB_PASSWORD=Cexp$2025
+LAMBDA_ARN={lambda_map[f'CEXP_OCR_Function-{self.suffix}'].funtion_arn}
 EOF""",
             "python3 -m pip install psycopg2-binary dotenv > pip_install.log 2>&1",
             "python3 OCR_Table_Creation.py > table_creation.log 2>&1"
