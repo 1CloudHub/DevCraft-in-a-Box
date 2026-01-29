@@ -270,7 +270,12 @@ class CdkStack(Stack):
         doc_bucket = s3.Bucket(
             self, "doc_bucket",
             bucket_name=final_bucket_name,
-            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
+            block_public_access=s3.BlockPublicAccess(
+                block_public_acls=False,
+                block_public_policy=False,
+                ignore_public_acls=False,
+                restrict_public_buckets=False
+            ),
             removal_policy=RemovalPolicy.DESTROY,
             auto_delete_objects=True,
             cors=[
