@@ -409,7 +409,8 @@ class CdkStack(Stack):
             "db_user": "postgres",
             "bucket_name": final_bucket_name,
             "region_name": self.region,
-            "worker_name": f"CEXP_OCR_Worker_Function-{self.suffix}"
+            "worker_name": f"CEXP_OCR_Worker_Function-{self.suffix}",
+            "orchestrator_name": f"CEXP_OCR_Function-{self.suffix}"
         }
 
         # === Lambda Creation ===

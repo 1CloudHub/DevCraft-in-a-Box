@@ -23,12 +23,12 @@ bucket_name = os.environ['bucket_name']
 S3_BUCKET = bucket_name
 region_name = os.environ['region_name']
 WORKER_NAME = os.environ['worker_name']
+ORCHESTRATOR_NAME = os.environ['orchestrator_name']
 
 schema = os.environ['schema']
 document_type_table = os.environ['document_type_table']
 job_table = os.environ['job_table']
 document_processing_table = os.environ['document_processing_table']
-model_id = os.environ['model_id']
 orchestrator_model_id = os.environ['orchestrator_model_id']
 extraction_model_id = os.environ['extraction_model_id']
 prompt_metadata_table = os.environ['prompt_metadata_table']
@@ -643,62 +643,6 @@ def invoke_model_function(final_prompt):
 
     print("Max retries exceeded.")
     return {"usage": {"input_tokens": 0, "output_tokens": 0}, "content": [{"text": ""}], "status": "Failed"}
-
-
-def invoke_model_function_invoke(final_prompt):
-    max_retries = 4
-    retries = 1
-    while retries <= max_retries:
-        try:
-            request_body = {
-                "schemaVersion": "messages-v1",
-                "messages": [
-                    {
-                        "role": "user",
-                        "content": [
-                            {
-                                "text": final_prompt
-                            }
-                        ]
-                    }
-                ],
-                "inferenceConfig": {
-                    "maxTokens": 3000,
-                    "temperature": 0.0,
-                }
-            }
-            
-            response = bedrock_client.invoke_model(
-                modelId = model_id,
-                body = json.dumps(request_body),
-                contentType = 'application/json'
-            )
-
-            if 'body' in response:
-                inference_result = response['body'].read().decode('utf-8')
-                final = json.loads(inference_result)
-                _final = {
-                    "usage" : {
-                        "input_tokens" : final.get("usage").get("inputTokenCount", 0),
-                        "output_tokens" : final.get("usage").get("outputTokenCount", 0)
-                    },
-                    "content" : final.get("output", {}).get("message", {}).get("content", [])
-                }
-            else:
-                _final = {}
-                
-            return _final
-            break
-        except Exception as e:
-            print("ERROR OCCURRED IN INVOKE LLM FUNCTION")
-            print(f"An error occurred: {e}")
-            print("Retrying...")
-            time.sleep(1)
-            retries += 1
-    else:
-        print("Maximum retries exceeded. Unable to retrieve response.")
-        return {}
-
 
 def key_extraction_funtion_invoke(doc_type,doc_name,doc_id,file_extension):
     try:
@@ -1475,38 +1419,25 @@ def lambda_handler(event, context):
             #         }
             #     ],
             # }), modelId=model_id)
-            
-            request_body = {
-                "schemaVersion": "messages-v1",
-                "messages": [
-                    {
-                        "role": "user",
-                        "content": [
-                            {
-                                "text": final_prompt
-                            }
-                        ]
-                    }
-                ],
-                "inferenceConfig": {
-                    "maxTokens": 1000
-                }
-            }
-            
-            response = bedrock_client.invoke_model(
-                modelId = model_id,
-                body = json.dumps(request_body),
-                contentType = 'application/json'
-            )
 
-            response_body = json.loads(response['body'].read().decode('utf-8'))
-            print('response_body',response_body)    
-            if 'usage' in response_body and 'outputTokenCount' in response_body['usage'] and 'outputTokenCount' in response_body['usage']:
-                input_tokens = response_body['usage']['outputTokenCount']
-                output_tokens = response_body['usage']['outputTokenCount']
+            final = invoke_model_function(final_prompt)
+
+            if 'usage' in final and 'input_tokens' in final['usage'] and 'output_tokens' in final['usage']:
+                input_tokens = final['usage']['input_tokens']
+                output_tokens = final['usage']['output_tokens']
             else:
                 input_tokens = 0
                 output_tokens = 0
+
+            if 'content' in final and len(final['content']) > 0 and 'text' in final['content'][0]:
+                response_body = final['content'][0]['text']
+                print("EXTRACTED JSON BEFORE LOADS : ", response_body)
+                try:
+                    response_body = json.loads(response_body)
+                    print("EXTRACTED JSON AFTER LOADS : ", response_body)
+                except Exception as e:
+                    print("Exception occurred while converting string to json: ", e)
+                    response_body = {}
             
             insert_query = f'''INSERT INTO {schema}.{ai_suggestion_table}
                                 (document_json, input_tokens, output_tokens, user_input, created_on)
@@ -1514,13 +1445,10 @@ def lambda_handler(event, context):
             string_doc_json = json.dumps(document_json)   
             insert_values =(string_doc_json, str(input_tokens), str(output_tokens), user_input)      
             insert_db(insert_query, insert_values)
-
-            response_body = response_body['output']['message']['content'][0]['text']
-
              
             return {
                 "status_code" : 200,
-                "response" : response_body
+                "response" : json.dumps(response_body)
             }
         except Exception as e:
             print(f"Error Occured in {event_type} : {e}")
@@ -2169,7 +2097,7 @@ def lambda_handler(event, context):
             }
 
             lambda_client.invoke(
-                FunctionName='CEXP_OCR_Function-fx14',
+                FunctionName=ORCHESTRATOR_NAME,
                 InvocationType='Event',
                 Payload=json.dumps(sec_event).encode("utf-8"),
             )

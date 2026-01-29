@@ -14,7 +14,6 @@
       "document_type_table": "cexp_ocr_document_types",
       "job_table": "ocr_job",
       "document_processing_table": "cexp_ocr_document_upload_details",
-      "model_id": "us.amazon.nova-pro-v1:0",
       "orchestrator_model_id": "openai.gpt-oss-120b-1:0",
       "extraction_model_id": "qwen.qwen3-vl-235b-a22b",
       "prompt_metadata_table": "cexp_ocr_prompt_metadata",
