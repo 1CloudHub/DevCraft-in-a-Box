@@ -47,7 +47,7 @@ From the AWS Console, open the **CloudShell** environment.
 ### 4. Clone the CDK Repository
 
 ```bash
-git clone --branch cexp-ocr https://github.com/1CloudHub/DevCraft-in-a-Box.git CEXP
+git clone --branch cexp-ocr-v2 https://github.com/1CloudHub/DevCraft-in-a-Box.git CEXP
 ```
 
 > Clones the specified branch of the TextOps CDK infrastructure repository.
