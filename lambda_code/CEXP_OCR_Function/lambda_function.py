@@ -1903,7 +1903,7 @@ def lambda_handler(event, context):
                 "statusCode" : 200, 
                 "status" : select_result,
                 "data" : json_data,
-                "presigned_url" : presigned_url
+                "presigned_url" : f"https://{bucket_name}.s3.{region_name}.amazonaws.com/{key}"
             }
 
         return {
@@ -2077,7 +2077,7 @@ def lambda_handler(event, context):
                 "statusCode" : 200, 
                 "status" : select_result,
                 "data" : json_data,
-                "presigned_url" : presigned_url   
+                "presigned_url" : f"https://{bucket_name}.s3.{region_name}.amazonaws.com/{key}"   
             }
     
     
