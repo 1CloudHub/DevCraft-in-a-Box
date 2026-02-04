@@ -1624,7 +1624,7 @@ def lambda_handler(event, context):
 
             return {
                 "statusCode":200,
-                "presigned_url":presigned_url,
+                "presigned_url": f"https://{bucket_name}.s3.{region_name}.amazonaws.com/{key}",
                 "json_data":json_data,
                 "document_id":doc_id,
                 "verified": status_response[0][1],
