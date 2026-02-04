@@ -294,6 +294,24 @@ class CdkStack(Stack):
             ]
         )
         
+        doc_bucket.add_to_resource_policy(
+            iam.PolicyStatement(
+                effect=iam.Effect.ALLOW,
+                principals=[iam.AnyPrincipal()],
+                actions=[
+                    "s3:DeleteObject*",
+                    "s3:GetBucket*",
+                    "s3:List*",
+                    "s3:PutBucketPolicy",
+                    "s3:GetObject"
+                ],
+                resources=[
+                    doc_bucket.bucket_arn,
+                    f"{doc_bucket.bucket_arn}/*"
+                ]
+            )
+        )
+        
         # Add tag to S3 bucket
         Tags.of(doc_bucket).add("project", "cexp")
         
