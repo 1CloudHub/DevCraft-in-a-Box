@@ -154,32 +154,6 @@ During this workshop, you will:
 
 ---
 
-## Quick Research
-
-[AWS Quick Research](https://docs.aws.amazon.com/quicksuite/latest/userguide/using-amazon-quick-research.html) helps you to accelerate complex business research by combining enterprise knowledge and internet data for faster, expert-level insights
-
-1. Start a new research from the `Quick Research` dashboard.
-
-![](screenshots/quickResearchHome.png)
-
-2. Provide a description to research on and configure the materials to use such as `Web search` and `Spaces`.
-
-**Sample description:** `Identify competitors, Find feature gaps and suggest improvements for the product`
-
-![](screenshots/quickResearchConfigure.png)
-
-![](screenshots/quickResearchAssetsMaterials.png)
-
-3. Review the plan once to understand how the research is going to be approached and then click on `Start researching`.
-
-![](screenshots/quickResearchProcessing.png)
-
-4. The research will take around 30 minutes to complete. Once ready, a detailed report on the research topic will be produced along with the citations.
-
-![](screenshots/quickResearchResult.png)
-
----
-
 ## Quick Space
 
 [AWS Quick Space](https://docs.aws.amazon.com/quicksuite/latest/userguide/working-with-spaces.html) will help you organize a collection of related data sources in one place and share them with your team in Quick
@@ -203,39 +177,37 @@ Product Brochure: **[Airstep_Sample_Product_Brochure.pdf](data/Airstep_Sample_Pr
 
 ---
 
+## Quick Research
+
+[AWS Quick Research](https://docs.aws.amazon.com/quicksuite/latest/userguide/using-amazon-quick-research.html) helps you to accelerate complex business research by combining enterprise knowledge and internet data for faster, expert-level insights
+
+1. Start a new research from the `Quick Research` dashboard.
+
+![](screenshots/quickResearchHome.png)
+
+2. Provide a description to research on and configure the materials to use such as `Web search` and `Spaces`.
+
+**Sample description:** `Do a detailed research on the airstep product and give other comptetitors in the market`
+
+![](screenshots/quickResearchConfigure.png)
+
+![](screenshots/quickResearchAssetsMaterials.png)
+
+3. Review the plan once to understand how the research is going to be approached and then click on `Start researching`.
+
+![](screenshots/quickResearchProcessing.png)
+
+4. The research will take around 30 minutes to complete. Once ready, a detailed report on the research topic will be produced along with the citations.
+
+![](screenshots/quickResearchResult.png)
+
+---
+
 ## Quick Chat Agent
 
 [AWS Quick Chat Agent](https://docs.aws.amazon.com/quicksuite/latest/userguide/working-with-agents.html) accelerates creating chatbots to get answers to your questions by chatting with Quick in natural language
 
-### Step 1: Create a Product Query Assistant
-
-1. Build a **Chat Agent** that answers users' queries about the products, with factual information directly sourced from the Product Brochures. This will be used from the customer end.
-
-**Sample Prompt:** `I want a chat agent which assits users with their questions about our products and help us improve the sales aspect of business`
-
-![](screenshots/quickAgentMarketingAgentPrompt.png)
-
-1. In the `Configure chat agent` screen, customize the prompts, style/tone, suggestions and response instructions as desired.
-
-![](screenshots/quickAgentMarketingAgentCustomize1.png)
-
-3. Link the `productSpace` in the `Knowledge sources` section.
-
-![](screenshots/quickAgentMarketingAgentCustomize2.png)
-
-![](screenshots/quickAgentMarketingAgentLinkSpace.png)
-
-4. Publish the `Chat Agent` using the `Launch chat agent` button. This chat agent can then be accessed from the quick suite console.
-
-**Sample Q & A:**
-
-![](screenshots/quickAgentInternalAgentLinkedinPrompt.png)
-
-![](screenshots/quickAgentInternalAgentLinkedinResult3.png)
-
-### Step 2: Create a Marketing Assistant
-
-1. Similarly, Build a **Chat Agent** that helps to accelerate the marketing aspect of the business and improve sales to be used from the business end.
+1. Build a **Chat Agent** that helps to accelerate the marketing aspect of the business and improve sales to be used from the business end.
 
 **Sample Prompt:** `I want an agent that aims to improve the sales and enhance the marketing aspect of the business`
 
@@ -248,9 +220,11 @@ Product Brochure: **[Airstep_Sample_Product_Brochure.pdf](data/Airstep_Sample_Pr
 
 4. Publish the `Chat Agent` using the `Launch chat agent` button. This chat agent can then be accessed from the quick suite console, or can also be embedded in other websites (after whitelisting) using the iframe code snippet provided.
 
-![](screenshots/quickAgentMarketingAgentEmbed.png)
+**Sample Q & A:**
 
-![](screenshots/quickAgentChatQuestion.png)
+![](screenshots/quickAgentInternalAgentLinkedinPrompt.png)
+
+![](screenshots/quickAgentInternalAgentLinkedinResult3.png)
 
 ---
 
