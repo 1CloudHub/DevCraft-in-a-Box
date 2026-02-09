@@ -1,0 +1,102 @@
+review_id,review_date,customer_type,industry,product_variant,review_text,rating
+R001,2025-01-01,Enterprise,Manufacturing,Airstep Pro,"Real-time pressure mapping helped us reduce fatigue-related incidents on the shop floor.",5
+R002,2025-01-02,SMB,Physiotherapy,Airstep Core,"The insoles are comfortable but syncing data after long sessions sometimes takes time.",3
+R003,2025-01-03,Enterprise,Sports Performance,Airstep Pro,"Gait analysis metrics are very accurate and useful for athlete performance optimization.",5
+R004,2025-01-04,SMB,Healthcare,Airstep Core,"Calibration instructions could be clearer for non-technical users.",3
+R005,2025-01-05,Enterprise,Manufacturing,Airstep Pro,"Posture deviation alerts helped us redesign workstation layouts.",4
+R006,2025-01-06,SMB,Rehabilitation,Airstep Core,"Battery life is sufficient for daily rehab sessions but could be improved.",3
+R007,2025-01-07,Enterprise,Sports Performance,Airstep Pro,"Stride analysis helped our coaches fine-tune training plans.",5
+R008,2025-01-08,SMB,Elder Care,Airstep Core,"The mobile app interface is clean and easy for elderly users.",4
+R009,2025-01-09,Enterprise,Manufacturing,Airstep Pro,"Would like export options for long-term historical movement data.",4
+R010,2025-01-10,SMB,Physiotherapy,Airstep Core,"Occasional Bluetooth disconnects during high-movement exercises.",2
+R011,2025-01-11,Enterprise,Healthcare,Airstep Pro,"Fatigue indexing provided insights we could not measure earlier.",5
+R012,2025-01-12,SMB,Rehabilitation,Airstep Core,"The insoles fit well but initial setup took longer than expected.",3
+R013,2025-01-13,Enterprise,Sports Performance,Airstep Pro,"High-frequency sensing delivers very detailed movement data.",5
+R014,2025-01-14,SMB,Elder Care,Airstep Core,"Posture alerts are helpful but notification timing can be improved.",4
+R015,2025-01-15,Enterprise,Manufacturing,Airstep Pro,"Durability is excellent even in high-stress industrial environments.",5
+R016,2025-01-16,SMB,Physiotherapy,Airstep Core,"The analytics dashboard could include more visual explanations.",3
+R017,2025-01-17,Enterprise,Healthcare,Airstep Pro,"Helped clinicians detect abnormal gait patterns early.",5
+R018,2025-01-18,SMB,Rehabilitation,Airstep Core,"Battery drains faster when continuous tracking is enabled.",2
+R019,2025-01-19,Enterprise,Sports Performance,Airstep Pro,"Real-time feedback during training sessions is a major advantage.",5
+R020,2025-01-20,SMB,Elder Care,Airstep Core,"Would like voice alerts instead of only visual notifications.",4
+R021,2025-01-21,Enterprise,Manufacturing,Airstep Pro,"Integration with our existing analytics systems was smooth.",4
+R022,2025-01-22,SMB,Physiotherapy,Airstep Core,"Mobile app occasionally lags when loading historical data.",3
+R023,2025-01-23,Enterprise,Healthcare,Airstep Pro,"Improved rehabilitation planning with data-backed insights.",5
+R024,2025-01-24,SMB,Rehabilitation,Airstep Core,"The product works well but documentation needs more examples.",3
+R025,2025-01-25,Enterprise,Sports Performance,Airstep Pro,"Athletes appreciate the detailed stride symmetry analysis.",5
+R026,2025-01-26,SMB,Elder Care,Airstep Core,"Setup was easy and required minimal technical support.",4
+R027,2025-01-27,Enterprise,Manufacturing,Airstep Pro,"Would like automated weekly summary reports.",4
+R028,2025-01-28,SMB,Physiotherapy,Airstep Core,"Some features are hidden too deep in the app menus.",3
+R029,2025-01-29,Enterprise,Healthcare,Airstep Pro,"Data accuracy has been consistently reliable.",5
+R030,2025-01-30,SMB,Rehabilitation,Airstep Core,"Occasional app crashes during long review sessions.",2
+R031,2025-01-31,Enterprise,Sports Performance,Airstep Pro,"Excellent tool for monitoring training load over time.",5
+R032,2025-02-01,SMB,Elder Care,Airstep Core,"Would prefer larger text size options in the app.",4
+R033,2025-02-02,Enterprise,Manufacturing,Airstep Pro,"Reduced injury risk through proactive posture alerts.",5
+R034,2025-02-03,SMB,Physiotherapy,Airstep Core,"Sync speed could be faster when multiple users are connected.",3
+R035,2025-02-04,Enterprise,Healthcare,Airstep Pro,"Historical movement replay is extremely useful for diagnosis.",5
+R036,2025-02-05,SMB,Rehabilitation,Airstep Core,"Battery indicator is not always accurate.",2
+R037,2025-02-06,Enterprise,Sports Performance,Airstep Pro,"Provides actionable insights rather than raw data.",5
+R038,2025-02-07,SMB,Elder Care,Airstep Core,"Comfort level is high even for all-day wear.",4
+R039,2025-02-08,Enterprise,Manufacturing,Airstep Pro,"Initial onboarding for large teams could be improved.",3
+R040,2025-02-09,SMB,Physiotherapy,Airstep Core,"Good value for small clinics looking for basic gait analysis.",4
+R041,2025-02-10,Enterprise,Healthcare,Airstep Pro,"Supports evidence-based clinical decision making.",5
+R042,2025-02-11,SMB,Rehabilitation,Airstep Core,"Would like integration with third-party rehab software.",4
+R043,2025-02-12,Enterprise,Sports Performance,Airstep Pro,"Sensor precision meets professional sports standards.",5
+R044,2025-02-13,SMB,Elder Care,Airstep Core,"Occasional false posture alerts.",3
+R045,2025-02-14,Enterprise,Manufacturing,Airstep Pro,"Helped justify ergonomic investments with data.",5
+R046,2025-02-15,SMB,Physiotherapy,Airstep Core,"User training materials could be more detailed.",3
+R047,2025-02-16,Enterprise,Healthcare,Airstep Pro,"Improved patient engagement through visual analytics.",5
+R048,2025-02-17,SMB,Rehabilitation,Airstep Core,"App performance degrades slightly on older devices.",3
+R049,2025-02-18,Enterprise,Sports Performance,Airstep Pro,"Reliable tracking even during high-impact movement.",5
+R050,2025-02-19,SMB,Elder Care,Airstep Core,"Would like automatic fall-risk scoring.",4
+R051,2025-02-20,Enterprise,Manufacturing,Airstep Pro,"Scales well across multiple facilities.",5
+R052,2025-02-21,SMB,Physiotherapy,Airstep Core,"Limited customization options for reports.",3
+R053,2025-02-22,Enterprise,Healthcare,Airstep Pro,"Supports long-term rehabilitation outcome tracking.",5
+R054,2025-02-23,SMB,Rehabilitation,Airstep Core,"Occasional delays in alert notifications.",3
+R055,2025-02-24,Enterprise,Sports Performance,Airstep Pro,"Helps correlate fatigue with injury risk.",5
+R056,2025-02-25,SMB,Elder Care,Airstep Core,"Setup assistance documentation was helpful.",4
+R057,2025-02-26,Enterprise,Manufacturing,Airstep Pro,"Would like AI-based anomaly detection improvements.",4
+R058,2025-02-27,SMB,Physiotherapy,Airstep Core,"Good core features but advanced analytics are limited.",3
+R059,2025-02-28,Enterprise,Healthcare,Airstep Pro,"Clear improvement in patient outcome tracking.",5
+R060,2025-03-01,SMB,Rehabilitation,Airstep Core,"Battery recharge time is slightly long.",3
+R061,2025-03-02,Enterprise,Sports Performance,Airstep Pro,"Data granularity is ideal for elite training.",5
+R062,2025-03-03,SMB,Elder Care,Airstep Core,"Would benefit from caregiver notification features.",4
+R063,2025-03-04,Enterprise,Manufacturing,Airstep Pro,"Reduced workplace injuries within three months.",5
+R064,2025-03-05,SMB,Physiotherapy,Airstep Core,"App navigation could be simplified.",3
+R065,2025-03-06,Enterprise,Healthcare,Airstep Pro,"Clinical teams found insights easy to interpret.",5
+R066,2025-03-07,SMB,Rehabilitation,Airstep Core,"Exporting data requires too many steps.",3
+R067,2025-03-08,Enterprise,Sports Performance,Airstep Pro,"Excellent support for high-impact sports.",5
+R068,2025-03-09,SMB,Elder Care,Airstep Core,"Alerts are useful but sometimes repetitive.",3
+R069,2025-03-10,Enterprise,Manufacturing,Airstep Pro,"System reliability has been consistently high.",5
+R070,2025-03-11,SMB,Physiotherapy,Airstep Core,"Would like more customization in dashboards.",4
+R071,2025-03-12,Enterprise,Healthcare,Airstep Pro,"Enhanced ability to track recovery progress.",5
+R072,2025-03-13,SMB,Rehabilitation,Airstep Core,"Initial learning curve was moderate.",3
+R073,2025-03-14,Enterprise,Sports Performance,Airstep Pro,"Provides a competitive advantage through data.",5
+R074,2025-03-15,SMB,Elder Care,Airstep Core,"Comfort and flexibility are strong points.",4
+R075,2025-03-16,Enterprise,Manufacturing,Airstep Pro,"Would like predictive fatigue alerts.",4
+R076,2025-03-17,SMB,Physiotherapy,Airstep Core,"Occasional syncing issues during peak hours.",3
+R077,2025-03-18,Enterprise,Healthcare,Airstep Pro,"Supports data-driven treatment planning.",5
+R078,2025-03-19,SMB,Rehabilitation,Airstep Core,"App updates sometimes introduce minor bugs.",2
+R079,2025-03-20,Enterprise,Sports Performance,Airstep Pro,"Training insights are highly actionable.",5
+R080,2025-03-21,SMB,Elder Care,Airstep Core,"Would like simplified reports for caregivers.",4
+R081,2025-03-22,Enterprise,Manufacturing,Airstep Pro,"Excellent durability under continuous use.",5
+R082,2025-03-23,SMB,Physiotherapy,Airstep Core,"More tutorial videos would help onboarding.",3
+R083,2025-03-24,Enterprise,Healthcare,Airstep Pro,"Improved consistency in rehabilitation outcomes.",5
+R084,2025-03-25,SMB,Rehabilitation,Airstep Core,"Battery performance varies with usage patterns.",3
+R085,2025-03-26,Enterprise,Sports Performance,Airstep Pro,"High confidence in sensor accuracy.",5
+R086,2025-03-27,SMB,Elder Care,Airstep Core,"App notifications can be overwhelming at times.",3
+R087,2025-03-28,Enterprise,Manufacturing,Airstep Pro,"Would like deeper analytics on load distribution.",4
+R088,2025-03-29,SMB,Physiotherapy,Airstep Core,"Overall a solid product for small clinics.",4
+R089,2025-03-30,Enterprise,Healthcare,Airstep Pro,"Data visualization helps explain progress to patients.",5
+R090,2025-03-31,SMB,Rehabilitation,Airstep Core,"Initial device pairing sometimes fails.",2
+R091,2025-04-01,Enterprise,Sports Performance,Airstep Pro,"Supports long-term performance monitoring.",5
+R092,2025-04-02,SMB,Elder Care,Airstep Core,"Would like automatic weekly summaries.",4
+R093,2025-04-03,Enterprise,Manufacturing,Airstep Pro,"Reduced absenteeism through early fatigue detection.",5
+R094,2025-04-04,SMB,Physiotherapy,Airstep Core,"Limited analytics depth compared to enterprise version.",3
+R095,2025-04-05,Enterprise,Healthcare,Airstep Pro,"Strong foundation for data-driven care programs.",5
+R096,2025-04-06,SMB,Rehabilitation,Airstep Core,"Customer support response time was acceptable.",4
+R097,2025-04-07,Enterprise,Sports Performance,Airstep Pro,"Helps correlate training intensity with recovery.",5
+R098,2025-04-08,SMB,Elder Care,Airstep Core,"Would benefit from simplified setup wizard.",4
+R099,2025-04-09,Enterprise,Manufacturing,Airstep Pro,"Analytics helped justify ergonomic investments.",5
+R100,2025-04-10,SMB,Physiotherapy,Airstep Core,"Overall satisfied but looking forward to feature updates.",4
+
