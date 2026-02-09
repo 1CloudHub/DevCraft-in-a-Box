@@ -73,11 +73,11 @@ During this workshop, you will:
 
 ![](screenshots/quickSuiteAdminNav.png)
 
-1. From the sidebar choose `SPICE Capacity` and make sure to provide sufficient SPICE capacity using the `Purchase capacity` option. Once done, go back to the `QuickSuite Dashboard` and select the `Datasets` tab within `QuickSight` in the sidebar.
+2. From the sidebar choose `SPICE Capacity` and make sure to provide sufficient SPICE capacity using the `Purchase capacity` option. Once done, go back to the `QuickSuite Dashboard` and select the `Datasets` tab within `QuickSight` in the sidebar.
 
 ![](screenshots/spiceCapacityPurchase.png)
 
-3. Upload the provided sample dataset **[SaaS-Sales.csv](/data/SaaS-Sales.csv)**.
+3. Upload the provided **sample dataset:** **[SaaS-Sales.csv](/data/SaaS-Sales.csv)**.
    This data consists of customer and account details, the SaaS plans or products purchased, associated revenue and subscription information, engagement and usage signals, and the current stage of each customer in the sales and retention lifecycle.
 
 ![](screenshots/uploadDataDatasetsHome.png)
@@ -167,11 +167,9 @@ During this workshop, you will:
 
 ![](screenshots/quickSpaceHome.png)
 
-4.  Create two separate spaces and upload relevant files: One for maintaining product data and another for managing internal proprietary data.
-    - `productSpace` - Only the product brochure
-    - `proprietarySpace` - Both product brochure and Sales Data CSV
+4.  Create a space `proprietarySpace` and upload relevant files for managing internal proprietary data.
 
-Product Brochure: **[Airstep_Sample_Product_Brochure.pdf](data/Airstep_Sample_Product_Brochure.pdf)**
+**Product Brochure:** **[Airstep_Sample_Product_Brochure.pdf](data/Airstep_Sample_Product_Brochure.pdf)**
 
 ![](screenshots/quickSpaceProductSpace.png)
 
