@@ -185,7 +185,7 @@ During this workshop, you will:
 
 2. Provide a description to research on and configure the materials to use such as `Web search` and `Spaces`.
 
-**Sample description:** `Do a detailed research on the airstep product and give other comptetitors in the market`
+**Sample description:** `Do a detailed research on the airstep product and give other competitors in the market`
 
 ![](screenshots/quickResearchConfigure.png)
 
