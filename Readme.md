@@ -259,3 +259,11 @@ During this workshop, you will:
 - [SPICE Capacity](https://docs.aws.amazon.com/quicksuite/latest/userguide/spice.html)
 - [Manage SPICE](https://docs.aws.amazon.com/quicksuite/latest/userguide/managing-spice-capacity.html)
 - [Index Capacity](https://docs.aws.amazon.com/quicksuite/latest/userguide/manage-data-capacity.html)
+
+---
+
+## Quick Links
+
+- [SaaS-Sales.csv](/data/SaaS-Sales.csv)
+- [Airstep_Sample_Product_Brochure.pdf](data/Airstep_Sample_Product_Brochure.pdf)
+- [airstep_customer_reviews.csv](data/airstep_customer_reviews.csv)
