@@ -107,27 +107,7 @@ cdk deploy
 
 ## Post Deployment Steps
 
-### 10. Set Up Textract and Bedrock
-
-If your deployment includes AI model integrations:
-
-* Navigate to **Amazon Bedrock** > **Model Access**
-* Request access to relevant models like:
-
-  ```
-  - Claude 3.5 Sonnet V2
-  ```
-
-> Approval might take a few minutes depending on your AWS account.
-
-![Model Access Navigation](./assets/model-access-navigation.png)
-![Model Access](./assets/enable-model.png)
-![Model Access](./assets/request-for-access.png)
-![Bedrock Confirmation](./assets/bedrock-confirmation-page.png)
-
----
-
-### 11. Retrieve the Application URL
+### 10. Retrieve the Application URL
 
 Go to the **CloudFront** service:
 
