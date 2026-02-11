@@ -118,6 +118,13 @@ Go to the **CloudFront** service:
 
 ![Cloudfront URL Retrival](./assets/frontend.png)
 
+To Log-In to the Application, use the following Credentials
+
+```text
+E-Mail : demo@1cloudhub.com
+Password : Demo@2026
+```
+
 ---
 
 ## Accessing TextOps
