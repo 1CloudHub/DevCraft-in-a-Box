@@ -8,11 +8,12 @@ import math
 import requests
 from textractor import Textractor
 from textractor.data.constants import TextractFeatures
+from textractor.data.html_linearization_config import HTMLLinearizationConfig
 import base64
 from botocore.config import Config
 import fitz  # PyMuPDF
 from PIL import Image
-import io   
+import io
 
 db_user =os.environ['db_user']     
 db_password = os.environ['db_password']             
@@ -29,6 +30,7 @@ schema = os.environ['schema']
 document_type_table = os.environ['document_type_table']
 job_table = os.environ['job_table']
 document_processing_table = os.environ['document_processing_table']
+document_compare_table = os.environ['document_compare_table']
 orchestrator_model_id = os.environ['orchestrator_model_id']
 extraction_model_id = os.environ['extraction_model_id']
 prompt_metadata_table = os.environ['prompt_metadata_table']
@@ -50,6 +52,76 @@ lambda_config = Config(
 )
 
 lambda_client = boto3_session.client("lambda", config=lambda_config)
+
+# Document Type JSONs - Passport, License, National ID
+doc_types = {
+    "passport" : {
+        "documentType": "passport",
+        "documentDesc": "Government-issued travel document used for international identification and border control",
+        "fields": [
+            {
+            "name": "FULL NAME",
+            "description": "Full legal name of the passport holder including given name and surname"
+            },
+            {
+            "name": "DATE OF BIRTH",
+            "description": "Date of birth of the passport holder"
+            },
+            {
+            "name": "GENDER",
+            "description": "Sex or gender of the passport holder"
+            },
+            {
+            "name": "NATIONALITY",
+            "description": "Nationality or citizenship of the passport holder"
+            }
+        ]
+    },
+    "license" : {
+        "documentType": "drivers_license",
+        "documentDesc": "Government-issued identification card that authorizes an individual to operate motor vehicles",
+        "fields": [
+            {
+            "name": "FULL NAME",
+            "description": "Full legal name of the license holder including given name and surname"
+            },
+            {
+            "name": "DATE OF BIRTH",
+            "description": "Date of birth of the license holder"
+            },
+            {
+            "name": "GENDER",
+            "description": "Sex or gender of the license holder"
+            },
+            {
+            "name": "NATIONALITY",
+            "description": "Nationality or citizenship of the license holder"
+            }
+        ]
+    },
+    "national_id" : {
+        "documentType": "national_id",
+        "documentDesc": "Philippine Identification System (PhilSys) national identity card issued to Filipino citizens and resident aliens",
+        "fields": [
+            {
+            "name": "FULL NAME",
+            "description": "Full legal name of the ID holder including given name and surname"
+            },
+            {
+            "name": "DATE OF BIRTH",
+            "description": "Date of birth of the ID holder"
+            },
+            {
+            "name": "GENDER",
+            "description": "Sex or gender of the ID holder"
+            },
+            {
+            "name": "NATIONALITY",
+            "description": "Nationality or citizenship of the ID holder"
+            }
+        ]
+    }
+}
 
 
 def select_db(query):
@@ -628,6 +700,13 @@ def invoke_model_function(final_prompt):
                         usage = {
                             "input_tokens": stop["usage"].get("inputTokens", 0),
                             "output_tokens": stop["usage"].get("outputTokens", 0)
+                        }
+                elif "metadata" in event:
+                    metadata = event["metadata"]
+                    if "usage" in metadata:
+                        usage = {
+                            "input_tokens": metadata["usage"].get("inputTokens", 0),
+                            "output_tokens": metadata["usage"].get("outputTokens", 0),
                         }
 
             return {
@@ -1247,6 +1326,7 @@ def lambda_handler(event, context):
     print("START TIME : ",start_time)
 
     event_type = event['event_type']
+    print("Event Type: ", event_type)
     if event_type == "add_document_type":
         try:
             email_id = event['email_id']
@@ -1575,6 +1655,235 @@ def lambda_handler(event, context):
                 "message" : "An Error Occured While Deleting Document Type"
             }
 
+    if event_type == "list_doc_compare":
+        try:
+            query = f"select json_agg(row_to_json(row_values)) from (SELECT * FROM {schema}.{document_compare_table} WHERE delete_status = 0 order by created_on desc) as row_values;"   
+            response = select_db(query)
+            print(response[0][0])
+
+            if not response:
+                return {
+                    "status_code" : 200,
+                    "result" : []
+                }
+            
+            return {
+                    "status_code" : 200,
+                    "result" : response[0][0]
+                }
+        
+        except Exception as e:
+            print(f"Error Occured in {event_type} : {e}")
+            return {
+                "status_code" : 500,
+                "message" : "An Error Occured While Retriving Documents"
+            }
+
+    if event_type == "document_compare":
+        try:
+            job_id = event['job_id']
+            uploaded_by = event['uploaded_by']
+            payload = event['payload']
+
+            results = []
+
+            textract_result = {}
+            insert_query = f'''INSERT INTO {schema}.{document_compare_table} (job_id, job_details, job_status, status_description, total_input_tokens, total_output_tokens, delete_status, created_by)
+            VALUES(%s, %s, 'IN PROGRESS', 'IN PROGRESS', %s, %s, 0, %s);'''
+            values = (job_id, json.dumps(payload), 0, 0, uploaded_by)
+            insert_db(insert_query, values)
+
+            for item in payload:
+                uri = item['uri']
+                filename = item['filename']
+
+                # calling textract for extraction
+                pages_json = []
+                extractor = Textractor(region_name=region_name)
+                document = extractor.start_document_analysis(
+                    file_source=f"s3://{S3_BUCKET}/{uri}",
+                    features=[TextractFeatures.LAYOUT, TextractFeatures.TABLES],
+                    save_image=False,
+                )
+
+                print("Document length: ", len(document.pages))
+
+                config = HTMLLinearizationConfig()
+
+                for i in range(len(document.pages)):
+                    text = document.pages[i].get_text(config=config)
+
+                    pages_json.append({
+                        "page": i + 1,
+                        "extracted_text": text.replace("{", "{{").replace("}", "}}")
+                    })
+
+                textract_result[filename] = pages_json
+            print("Textract Result: ", textract_result)
+
+            # Building Prompt
+            file_1_item   = payload[0]
+            file_2_item   = payload[1]
+
+            file_1_schema = doc_types[file_1_item['type']]
+            file_2_schema = doc_types[file_2_item['type']]
+
+            def format_fields(fields):
+                return "\n".join(
+                    f'  - "{f["name"]}": {f["description"]}'
+                    for f in fields
+                )
+
+            base_prompt = select_db(f"""
+                SELECT prompt_template 
+                FROM {schema}.{prompt_metadata_table}
+                WHERE prompt_type = 'document_compare';
+            """)[0][0]
+
+            final_prompt = base_prompt.format(
+                file_1_doc_name = file_1_item['filename'],
+                file_1_doc_type = file_1_schema['documentType'],
+                file_1_doc_desc = file_1_schema['documentDesc'],
+                file_1_fields   = format_fields(file_1_schema['fields']),
+                file_1_pages    = textract_result[file_1_item['filename']],
+
+                file_2_doc_name = file_2_item['filename'],
+                file_2_doc_type = file_2_schema['documentType'],
+                file_2_doc_desc = file_2_schema['documentDesc'],
+                file_2_fields   = format_fields(file_2_schema['fields']),
+                file_2_pages    = textract_result[file_2_item['filename']]
+            )
+
+            print("Final Prompt : ", final_prompt)
+
+            final = invoke_model_function(final_prompt)
+
+            extraction_input_tokens = final.get("usage", {}).get("input_tokens", 0)
+            extraction_output_tokens = final.get("usage", {}).get("output_tokens", 0)
+            status = final.get("status", "")
+            print("Status: ", status)
+
+            # Extract content safely
+            raw_output = final.get("content", [{}])[0].get("text", "").strip()
+
+            print("Raw Output: ", raw_output)
+
+            # Remove markdown json fences if present
+            if raw_output.startswith("```"):
+                raw_output = raw_output.split("```")[1]
+                raw_output = raw_output.replace("json", "").strip()
+
+            try:
+                extracted_json = json.loads(raw_output)
+            except Exception as e:
+                print("Error parsing JSON:", e)
+                extracted_json = {}
+
+            print("Extracted JSON: ", extracted_json)
+
+            # Now call One more LLM - to compare and reason the match/mis-match
+            def build_comparison_input(
+                extracted_json: dict, 
+                file_1_doc_type: str, 
+                file_2_doc_type: str,
+                file_1_doc_name: str,
+                file_2_doc_name: str,
+            ) -> str:
+                file_1_fields = extracted_json.get(file_1_doc_name, {})
+                file_2_fields = extracted_json.get(file_2_doc_name, {})
+
+                # Union of all keys from both documents
+                all_fields = list(dict.fromkeys(list(file_1_fields.keys()) + list(file_2_fields.keys())))
+
+                lines = []
+                for field in all_fields:
+                    val_1 = file_1_fields.get(field, "NOT_AVAILABLE")
+                    val_2 = file_2_fields.get(field, "NOT_AVAILABLE")
+                    lines.append(f'Field     : {field}')
+                    lines.append(f'{file_1_doc_type} : {val_1}')
+                    lines.append(f'{file_2_doc_type} : {val_2}')
+                    lines.append("")  # blank line between fields
+                print("Lines: ", lines)
+
+                return "\n".join(lines)
+
+            compare_base_prompt = select_db(f"""
+                SELECT prompt_template 
+                FROM {schema}.{prompt_metadata_table}
+                WHERE prompt_type = 'document_compare_fields';
+            """)[0][0]
+
+            comparison_input_block = build_comparison_input(
+                extracted_json   = extracted_json,
+                file_1_doc_type  = file_1_schema['documentType'],
+                file_2_doc_type  = file_2_schema['documentType'],
+                file_1_doc_name  = file_1_item['filename'],
+                file_2_doc_name  = file_2_item['filename']
+            )
+
+            compare_final_prompt = compare_base_prompt.format(
+                file_1_doc_type  = file_1_schema['documentType'],
+                file_1_doc_name  = file_1_item['filename'],
+                file_2_doc_type  = file_2_schema['documentType'],
+                file_2_doc_name  = file_2_item['filename'],
+                comparison_input = comparison_input_block
+            )
+
+            print("Compare Final Prompt : ", compare_final_prompt)
+
+            compare_final = invoke_model_function(compare_final_prompt)
+
+            compare_input_tokens = compare_final.get("usage", {}).get("input_tokens", 0)
+            compare_output_tokens = compare_final.get("usage", {}).get("output_tokens", 0)
+            compare_status = compare_final.get("status", "")
+            print("Status: ", compare_status)
+
+            # Extract content safely
+            compare_raw_output = compare_final.get("content", [{}])[0].get("text", "").strip()
+
+            # Remove markdown json fences if present
+            if compare_raw_output.startswith("```"):
+                compare_raw_output = compare_raw_output.split("```")[1]
+                compare_raw_output = compare_raw_output.replace("json", "").strip()
+
+            try:
+                compare_extracted_json = json.loads(compare_raw_output)
+            except Exception as e:
+                print("Error parsing JSON:", e)
+                compare_extracted_json = {}
+
+            print("Compare Extracted JSON: ", compare_extracted_json)
+            overall_input_tokens = extraction_input_tokens + compare_input_tokens
+            overall_output_tokens = extraction_output_tokens + compare_output_tokens
+
+            print("Total input tokens: ", overall_input_tokens)
+            print("Total output tokens: ", overall_output_tokens)
+
+            output_key = f"CEXP_OCR/document_compare/{job_id}/output.json"
+
+            s3_put(output_key, json.dumps(compare_extracted_json), "json")
+
+            update_query = f'''UPDATE {schema}.{document_compare_table} SET job_status = 'COMPLETED', status_description = 'COMPLETED', total_input_tokens = %s, total_output_tokens = %s
+            WHERE job_id = %s'''
+            values = (overall_input_tokens, overall_output_tokens, job_id)
+            update_db_values(update_query, values)
+
+            return {
+                "status_code" : 200,
+                "message" : "Success"
+            }
+
+        except Exception as e:
+            print(f"Error Occured in {event_type} : {e}")
+            update_query = f'''UPDATE {schema}.{document_compare_table} SET job_status = 'FAILED', status_description = 'FAILED', total_input_tokens = %s, total_output_tokens = %s
+            WHERE job_id = %s'''
+            values = (overall_input_tokens, overall_output_tokens, job_id)
+            update_db_values(update_query, values)
+            return {
+                "status_code" : 500,
+                "message" : "An Error Occured While Comparing Documents"
+            }
+
     if event_type == "list_documents":
         try:
             query = f"select json_agg(row_to_json(row_values)) from (SELECT * FROM {schema}.{document_processing_table} WHERE delete_status = 0 order by created_on desc) as row_values;"   
@@ -1598,7 +1907,7 @@ def lambda_handler(event, context):
                 "status_code" : 500,
                 "message" : "An Error Occured While Retriving Documents"
             }
-
+    
     if event_type == "view_document":
         try:
             doc_id = event['doc_id']
@@ -1938,6 +2247,17 @@ def lambda_handler(event, context):
             update_db(delete_query)
             return {"statusCode":200,"message":"Document deleted successfully"}
     
+    if event_type == 'doc_compare_delete':
+        try:
+            job_id = event['job_id']
+            print("Job ID: ", job_id)
+            delete_query = f'''UPDATE {schema}.{document_compare_table} SET delete_status = 1 where job_id = '{job_id}';'''
+            update_db(delete_query)
+            return {"statusCode":200,"message":"Document deleted successfully"}
+        except Exception as e:
+            print("Error in deleting document comparison: ", e)
+            return {"statusCode": 400, "message": "Document Deletion failed"}
+
     if event_type == 'doc_edit':
         try:
             doc_id = event['doc_id']
@@ -2347,3 +2667,35 @@ def lambda_handler(event, context):
                 "statusCode": 500,
                 "status": "Key extraction failed"
             }
+
+    if event_type == 'get_comparison_output':
+        job_id = event['job_id']
+
+        try:
+            response = s3_client.get_object(
+                Bucket = S3_BUCKET,
+                Key = f"CEXP_OCR/document_compare/{job_id}/output.json"
+            )
+            output_json = json.loads(response["Body"].read().decode("utf-8"))
+            print("S3 get object response: ", output_json)
+
+            select_query = f'''SELECT job_details FROM {schema}.{document_compare_table} WHERE job_id = '{job_id}' AND delete_status = 0;'''
+            job_response = select_db(select_query)[0][0]
+            print("Response : ", job_response)
+            urls = []
+            for file in job_response:
+                key = file['uri']
+                # file_url = s3_client.generate_presigned_url(
+                #     ClientMethod="get_object",
+                #     Params={
+                #         "Bucket": S3_BUCKET,
+                #         "Key": key
+                #     },
+                #     ExpiresIn=3600
+                # )
+                urls.append(f"https://{bucket_name}.s3.{region_name}.amazonaws.com/{key}")
+
+            return {"statusCode": 200, "output_json": output_json, "preview_urls": urls}
+        except Exception as e:
+            print("Error on get_comparison_output: ", e)
+            return {"statusCode": 400, "output_json": {}, "preview_urls": []}

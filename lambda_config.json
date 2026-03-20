@@ -19,7 +19,8 @@
       "prompt_metadata_table": "cexp_ocr_prompt_metadata",
       "ai_suggestion_table": "cexp_ocr_ai_suggestion_llm_count",
       "cexp_ocr_ai_key_extraction_details_table": "cexp_ocr_ai_key_extraction_details",
-      "temp_document_processing_table": "cexp_ocr_temp_document_upload_details"
+      "temp_document_processing_table": "cexp_ocr_temp_document_upload_details",
+      "document_compare_table": "cexp_ocr_document_compare_details"
     },
     "layers": ["PIL", "psycopg2", "PyMuPDF-OCR", "requests", "textractor-pkg"]
   },
