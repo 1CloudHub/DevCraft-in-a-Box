@@ -123,6 +123,12 @@ doc_types = {
     }
 }
 
+format_map = {
+    "jpg": "jpeg",
+    "jpeg": "jpeg",
+    "png": "png"
+}
+
 
 def select_db(query):
     connection = psycopg2.connect(  
@@ -528,7 +534,7 @@ def text_extract_llm(base_64_array,file_extension):
                             "image": {
                                 "format": i['format'],
                                 "source": {
-                                    "bytes": i['bytes']
+                                    "bytes": base64.b64decode(i['bytes'])
                                 }
                             }   
                         }
@@ -545,7 +551,7 @@ def text_extract_llm(base_64_array,file_extension):
                             "image": {
                                 "format": _format,
                                 "source": {
-                                    "bytes": "b"+i
+                                    "bytes": base64.b64decode(i)
                                 }
                             }   
                         }
@@ -2106,8 +2112,8 @@ def lambda_handler(event, context):
 
         file_extension = doc_name.split('.')[-1]     
 
-        if file_extension not in ['pdf' ,'jpg', 'png']:
-            print("INVALID FILE EXTENSION")
+        if file_extension.lower() not in ['pdf', 'png', 'jpg']:
+            print("INVALID FILE EXTENSION, ", file_extension)
             return {"statusCode":200,"message":"Invalid file type"}
 
         select_query = f'''SELECT doc_id from {schema}.{temp_document_processing_table} where doc_id = '{doc_id}' and delete_status = 0; '''
@@ -2149,11 +2155,11 @@ def lambda_handler(event, context):
                     final_output_json = test_key_extraction_funtion_llm(page_results,doc_type,doc_name,doc_id,file_extension,document_prompt_details)
                     print("TEST KEY EXTRACTION SUCCESSFULLY : ",final_output_json)
                     
-                elif file_extension in ['png','jpg']:
+                elif file_extension.lower() in ['png', 'jpg']:
                     print("TEST PNG,JPG")
                     #call the llm directly with the image
                     encoded_image = test_encode_image_to_base64(doc_type,doc_id,file_extension)
-                    base64_array = [{"bytes" : encoded_image, "format" : file_extension}]
+                    base64_array = [{"bytes" : encoded_image, "format" : format_map.get(file_extension.lower(), file_extension.lower())}]
                     print("TEST BASE64 ARRAY: ",base64_array)
                     page_results = text_extract_llm(base64_array,file_extension)   
                     print("TEST PAGE RESULTS: ",page_results)
